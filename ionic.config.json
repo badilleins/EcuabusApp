@@ -1,0 +1,7 @@
+{
+  "name": "EcuabusApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
