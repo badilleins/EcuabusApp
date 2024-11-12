@@ -68,3 +68,12 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+
+#Plataformas
+android/
+ios/
+
+#Archivos entorno
+.env
+

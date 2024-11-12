@@ -1,1 +1,14 @@
+.icon {
+  font-size: 24px;
+  transition: color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
 
+.icon:hover {
+  transform: scale(1.1);
+  fill: var(--ion-color-secondary);
+}
+
+.icon:active {
+  transform: scale(0.9);
+  fill: var(--ion-color-secondary);
+}
