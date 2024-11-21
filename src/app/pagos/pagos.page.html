@@ -1,0 +1,67 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Pagar Boleto</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Pagar Boleto</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div  class="ion-padding">
+    <h2 style="color: black;">Detalles del Boleto</h2>
+    <ion-card style="background-color: #ffffff;" color="#F6BA67">
+      <ion-card-header>
+        <ion-card-title>Boleto Seleccionado</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Origen:</strong> Quito</p>
+        <p><strong>Destino:</strong> Guayaquil</p>
+        <p><strong>Fecha:</strong> 18 de Noviembre, 2024</p>
+        <p><strong>Hora:</strong> 10:00 AM</p>
+        <p><strong>Precio:</strong> $15.00</p>
+      </ion-card-content>
+    </ion-card>
+
+    
+    <h2 style="color: black;">Seleccionar Método de Pago</h2>
+
+    <ion-card style="background-color: #ffffff;" color="#F6BA67">
+      <ion-item>
+        <ion-label>Método de Pago</ion-label>
+        <ion-select placeholder="Seleccionar" interface="popover" [(ngModel)]="metodoSeleccionado" (ionChange)="cambiarMetodo()">
+          <ion-select-option value="paypal">PayPal</ion-select-option>
+          <ion-select-option value="debito">Débito</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-card>
+
+    <div *ngIf="metodoSeleccionado === 'paypal'" class="ion-padding">
+      <ion-item>
+        <ion-input shape="round" label="Correo Electrónico" label-placement="floating" fill="outline" placeholder="Enter text" placeholder="Ingresa tu correo" [(ngModel)]="paypalEmail"></ion-input>
+      </ion-item>
+    </div>
+
+    <div *ngIf="metodoSeleccionado === 'debito'" class="ion-padding">
+      <ion-item>
+        <ion-input shape="round" label="Número de Tarjeta" label-placement="floating" fill="outline" placeholder="Enter text" placeholder="XXXX-XXXX-XXXX-XXXX" [(ngModel)]="debitoTarjeta"></ion-input>
+      
+      </ion-item>
+      <ion-item>
+        <ion-input shape="round" label="Fecha de Expiración" label-placement="floating" fill="outline" placeholder="Enter text" placeholder="MM/AA" [(ngModel)]="debitoExpiracion"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input shape="round" label="Código de Seguridad" label-placement="floating" fill="outline" placeholder="Enter text" type="password" [(ngModel)]="debitoCVC"></ion-input>
+
+      </ion-item>
+    </div>
+
+    <ion-button color="#F6BA67" size="large" shape="round" expand="block" class="boton-pago" (click)="pagarBoleto()">Pagar Ahora</ion-button>
+  </div>
+</ion-content>
