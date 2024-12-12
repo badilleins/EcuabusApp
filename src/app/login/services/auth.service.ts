@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import firebase from 'firebase/compat/app';
+import { map, Observable } from 'rxjs';
 
 
 @Injectable({
@@ -49,7 +50,21 @@ export class AuthService {
 
   // Obtener usuario actual
   getCurrentUser() {
+
     return this.afAuth.authState;
   }
+
+  async setPersistence() {
+    await this.afAuth.setPersistence('local');
+  }
+
+  getCurrentUserDisplayName(): Observable<string | null> {
+    return this.afAuth.authState.pipe(
+      map(user => user ? user.displayName || user.email : null)
+    );
+  }
+
+
+
 
 }
