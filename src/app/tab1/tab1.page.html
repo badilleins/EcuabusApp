@@ -6,11 +6,248 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="home_content">
+
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Inicio</ion-title>
     </ion-toolbar>
   </ion-header>
 
+    <ion-list class="options-list full-height" *ngIf="currentList ===1">
+      <p class="page-title">Ecuabus</p>
+      <p class="page-subtitle">¿A dónde quieres viajar?</p>
+    <!-- Cooperativa -->
+    <ion-item lines="none" class="custom-combobox">
+      <ion-icon name="bus-outline" slot="start"></ion-icon>
+      <ion-label class="label-info">Cooperativa</ion-label>
+      <ion-select [(ngModel)]="selectedCooperative" placeholder="Seleccionar Cooperativa" interface="popover" (ngModelChange)="obtainCooperatives()">
+        <ion-select-option *ngFor="let coop of cooperativesNames" [value]="coop">
+          {{ coop }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Origen -->
+    <ion-item lines="none" class="custom-combobox">
+      <ion-icon name="location-outline" slot="start"></ion-icon>
+      <ion-icon name="close-outline" slot="end" class="close-icon" (click)="enableOrigins()"></ion-icon>
+      <ion-label class="label-info">Origen</ion-label>
+      <ion-select [(ngModel)]="selectedOrigin" placeholder="Seleccionar Origen" interface="popover" (ngModelChange)="obtainDestinations()">
+        <ion-select-option *ngFor="let origin of originsFiltered" [value]="origin">
+          {{ origin }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Destino -->
+    <ion-item lines="none" class="custom-combobox">
+      <ion-icon name="navigate-outline" slot="start"></ion-icon>
+      <ion-icon name="close-outline" slot="end"  class="close-icon" (click)="enableDestinations()"></ion-icon>
+      <ion-label class="label-info">Destino</ion-label>
+      <ion-select [(ngModel)]="selectedDestination" placeholder="Seleccionar Destino" interface="popover" (ngModelChange)="obtainOrigins()">
+        <ion-select-option *ngFor="let destination of destinationsFiltered" [value]="destination">
+          {{ destination }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+
+     <!-- Hora de salida -->
+  <ion-item lines="none" class="custom-combobox" >
+    <ion-icon name="time-outline" slot="start"></ion-icon>
+    <ion-label>Hora</ion-label>
+    <ion-select [(ngModel)]="selectedHour" placeholder="Seleccionar Hora" interface="popover" (click)="obtainHours()">
+      <ion-select-option *ngFor="let hour of hoursFiltered" [value]="hour">
+        {{ hour }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+
+    <!-- Fecha -->
+    <ion-item lines="none" class="custom-combobox">
+      <ion-icon name="calendar-outline" slot="start"></ion-icon>
+      <ion-label class="label-info">Fecha</ion-label>
+      <ion-text id="info-date" slot="end">{{ selectedDate ? (selectedDate | date: 'shortDate') : 'Seleccionar Fecha' }}</ion-text>
+      <ion-button fill="clear" slot="end" (click)="openCalendar()">
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    <ion-modal [isOpen]="isCalendarOpen" (ionModalDidDismiss)="closeCalendar()">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Seleccionar Fecha</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="closeCalendar()">Cerrar</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+
+        <ion-content id="calendar_content">
+          <!-- Selector de Mes y Año -->
+          <ion-grid class="calendar-header">
+            <ion-row class="ion-align-items-center" >
+              <!-- Botón para el mes anterior -->
+              <ion-col size="4" class="ion-text-center">
+                <ion-button id="month-control"
+                  expand="block"
+                  fill="clear"
+                  color="primary"
+                  (click)="previousMonth()"
+                  aria-label="Mes anterior"
+                >
+                  <ion-icon name="chevron-back-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+              </ion-col>
+
+              <!-- Mes y Año actuales -->
+              <ion-col size="4" class="ion-text-center">
+                <ion-label class="current-month-year">
+                  {{ months[currentMonth] }} {{ currentYear }}
+                </ion-label>
+              </ion-col>
+
+              <!-- Botón para el mes siguiente -->
+              <ion-col size="4" class="ion-text-center">
+                <ion-button id="month-control"
+                  expand="block"
+                  fill="clear"
+                  color="primary"
+                  (click)="nextMonth()"
+                  aria-label="Mes siguiente"
+                >
+                  <ion-icon name="chevron-forward-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+          <!-- Encabezados de días de la semana -->
+          <ion-grid id="calendar-days-header">
+            <ion-row>
+              <ion-col *ngFor="let day of weekDays" class="ion-text-center">
+                <div>{{ day }}</div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+          <!-- Días del calendario -->
+          <ion-grid id="calendar-days">
+            <ion-row *ngFor="let week of splitDaysInWeeks(daysInMonthWithPlaceholders)">
+              <ion-col
+                *ngFor="let day of week"
+                [class.disabled]="!isEnabled(day)"
+                [class.current-month]="isCurrentMonth(day)"
+                (click)="isEnabled(day) && selectDate(day)">
+                <div>{{ day || '' }}</div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+        </ion-content>
+
+
+      </ng-template>
+    </ion-modal>
+
+
+
+    <ion-item lines="none">
+      <ion-button expand="block" class="next-button" shape="round" (click)="goNext()">Siguiente</ion-button>
+    </ion-item>
+  </ion-list>
+
+
+  <!-- Detalles -->
+  <ion-list class="options-list full-height" *ngIf="currentList ===2">
+    <p class="page-title">Ecuabus</p>
+    <p class="page-subtitle">Detalles</p>
+  <!-- Tipo de asiento -->
+  <ion-item lines="none" class="custom-combobox">
+    <ion-label>Tipo de asiento</ion-label>
+    <ion-select [(ngModel)]="selectedSeat" placeholder="Seleccionar asiento" interface="popover" (ngModelChange)="obtainCost()">
+      <ion-select-option *ngFor="let seat of seatTypes" [value]="seat">
+        {{ seat }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <!-- Costo por asiento -->
+  <ion-item lines="none" class="custom-combobox">
+    <ion-label>Costo asiento</ion-label>
+    <span>{{seatCost}}</span>
+  </ion-item>
+
+  <!-- Número de asientos-->
+  <ion-item lines="none" class="custom-combobox">
+    <ion-label>N. Asientos</ion-label>
+    <ion-select [(ngModel)]="selectedSeatsNumber" placeholder="Seleccionar número" interface="popover" (click)="obtainSeatsNumber()">
+      <ion-select-option *ngFor="let seatsNumber of availableSeats" [value]="seatsNumber">
+        {{ seatsNumber}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+
+  <!-- Método de pago -->
+ <ion-item lines="none" class="custom-combobox">
+  <ion-label>Método de pago</ion-label>
+  <ion-select [(ngModel)]="selectedMethod" placeholder="Seleccionar método" interface="popover">
+    <ion-select-option *ngFor="let method of methods" [value]="method">
+      {{ method }}
+    </ion-select-option>
+  </ion-select>
+</ion-item>
+
+ <!-- N bus -->
+ <ion-item lines="none" class="custom-combobox">
+  <ion-label>N. Bus</ion-label>
+  <span>{{busNumber}}</span>
+</ion-item>
+
+<ion-item lines="none" class="details-buttons">
+  <ion-button expand="block" class="next-button" shape="round" (click)="goBack()">Anterior</ion-button>
+ <ion-button expand="block" class="next-button" shape="round" (click)="goPayOrder()">Siguiente</ion-button>
+</ion-item>
+</ion-list>
+
+<ion-list class="options-list full-height" *ngIf="currentList ===3" class="pay_order">
+  <p class="page-title">Ecuabus</p>
+  <p class="page-subtitle">Órden de pago</p>
+
+  <div class="pay_detail">
+  <ion-item lines="none">
+    <p><b>Órden de pago<span></span></b></p>
+  </ion-item>
+  <ion-item lines="none">
+    <p>Viaje de <span>{{selectedOrigin}}</span> a <span>{{selectedDestination}}</span></p>
+  </ion-item>
+  <ion-item lines="none">
+    <p><b>Pasajero:</b> <span>{{userName}}</span></p>
+  </ion-item >
+  <ion-item lines="none">
+    <p><b>Subtotal:</b> $<span class="pay_amount">{{subtotal}}</span></p>
+  </ion-item>
+  <ion-item lines="none">
+
+    <p><b>Iva:</b> $<span class="pay_amount">{{iva}}</span></p>
+  </ion-item>
+  <ion-item lines="none">
+
+    <p><b>Total: </b>$<span class="pay_amount">{{total}}</span></p>
+  </ion-item>
+</div>
+
+  <ion-item lines="none">
+   <ion-button expand="block" class="next-button" shape="round" (click)="saveTicket()">Generar</ion-button>
+  </ion-item>
+</ion-list>
+
+
+
+
 </ion-content>
+
