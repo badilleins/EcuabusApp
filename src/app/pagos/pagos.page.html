@@ -31,20 +31,12 @@
 
     <h2 style="color: black;">Seleccionar Método de Pago</h2>
 
-    <ion-card style="background-color: #ffffff;" color="#F6BA67">
-      <ion-item>
-        <ion-label>Método de Pago</ion-label>
-        <ion-select placeholder="Seleccionar" interface="popover" [(ngModel)]="metodoSeleccionado">
-          <ion-select-option value="paypal">PayPal</ion-select-option>
-          <ion-select-option value="stripe">Stripe</ion-select-option>
-        </ion-select>
-      </ion-item>
-    </ion-card>
+
 
     <!-- Contenedor para el botón de PayPal -->
-    <div id="paypal-button-container"></div>
+    <div  id="paypal-button-container"></div>
 
-    <ion-button color="#F6BA67" size="large" shape="round" expand="block" class="boton-pago" (click)="pagarBoleto()">Pagar Ahora</ion-button>
+    
   </div>
 </ion-content>
 
