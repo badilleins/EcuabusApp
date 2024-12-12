@@ -22,8 +22,13 @@ const routes: Routes = [
   {
     path: 'recover-password',
     loadChildren: () => import('./recover-password/recover-password.module').then( m => m.RecoverPasswordPageModule)
+  },
+  {
+    path: 'pagos',
+    loadChildren: () => import('./pagos/pagos.module').then( m => m.PagosPageModule)
   }
  
+
 ];
 @NgModule({
   imports: [

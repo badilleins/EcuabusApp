@@ -1,0 +1,37 @@
+h2 {
+    margin-top: 2%;
+    color: var(--ion-color-primary);
+  }
+  
+  ion-card {
+    margin-top: 10px;
+  }
+  
+  ion-item {
+    margin-top: 12px;
+  }
+  
+  ::ng-deep ion-content {
+    --background: #f7f7f7; /* Fondo gris claro */
+  }
+
+
+
+  ::ng-deep .boton-pago {
+    
+    background-color: #F6BA67 !important;  
+    color: #ffffff !important;             
+    box-shadow: none !important;           
+    border-radius: 25px;     
+    position: fixed;    /* Fija el botón en la parte inferior */
+    bottom: 2%;          /* Posiciona el botón en la parte inferior de la pantalla */
+    left: 2%;          /* Alinea el botón al lado izquierdo */
+    width: 96%;        /* Hace que el botón ocupe el 100% de la pantalla */
+    z-index: 10;        /* Asegura que el botón esté por encima de otros elementos */
+    margin: 0;               
+  }
+
+
+  
+
+  
