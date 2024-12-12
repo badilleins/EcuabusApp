@@ -1,0 +1,191 @@
+/* Centrado general */
+ion-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  --background: #FCFCFC;
+  height: 100%;
+  padding: 20px;
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  margin-top: 10px; /* Agrega espacio superior */
+}
+
+.logo-container img {
+  width: 350px;
+  height: auto;
+  margin-bottom: -80px;
+}
+
+.title-container h1 {
+  font-size: 2.5rem;
+  color: #f6ba67;
+  font-weight: bold;
+}
+
+.title-container p {
+  font-size: 1.2rem;
+  color: #4B5057;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 15%;
+  max-width: 400px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.center{
+  width: 70%;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+}
+
+
+/* Estilo para el campo de entrada */
+.input-field {
+  width: 100%;
+  max-width: 400px; /* Limita el ancho máximo para campos largos */
+  border: none; /* Sin bordes */
+  background: #EEEEEE; /* Color de fondo */
+  color: #4B5057;
+  padding: 10px 20px; /* Espaciado interno para más estilo */
+  border-radius: 30px; /* Hace que los bordes sean redondeados */
+  font-size: 1.2rem;
+  text-align: center;
+  box-sizing: border-box; /* Asegura que padding no afecte el tamaño total */
+}
+
+/* Asegúrate de que las etiquetas no estén pegadas a los inputs */
+.form-group label {
+  margin-bottom: 10px; /* Aumenta el espacio debajo de las etiquetas */
+  font-weight: 500;
+  color: #4B5057;
+}
+
+
+/* Estilo para el botón de iniciar sesión */
+ion-button {
+  width: 70%; /* Asegura que el botón no ocupe toda la pantalla, solo el tamaño del contenedor */
+  border-radius: 500px; /* Bordes redondeados para el botón */
+  --background: #606060; /* Color del fondo del botón */
+  padding: 12px 0; /* Ajuste de altura del botón */
+  color: #f6ba67; /* Establece el color del texto como blanco */
+}
+
+.centrado-button{
+  text-align: center;
+  justify-content: center;
+  
+}
+
+ion-button::part(native) {
+  border-radius: 80px !important; /* Bordes aún más redondeados */
+}
+
+.forgot-password {
+  margin-top: -5px;
+  font-size: 0.9rem;
+  color: #4B5057;
+  text-decoration: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.register{
+  margin-top: -10px;
+  font-size: 0.9rem;
+  color: #4B5057;
+  text-decoration: none;
+}
+
+.register:hover {
+  text-decoration: underline;
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  width: 100%;
+}
+
+.divider span {
+  color: #4B5057;
+  background-color: white;
+  padding: 0 10px;
+  font-size: 1rem;
+}
+
+.divider:before,
+.divider:after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: #4B5057;
+  margin: 0 10px;
+}
+
+/* Botón de Google */
+.google-login {
+  --background: #ea4335;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 0.9rem; /* Reduce el tamaño del texto */
+  width: 70%; /* Reduce el ancho del botón */
+  height: 40px; /* Ajusta la altura del botón */
+  border-radius: 20px; /* Bordes redondeados */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; /* Elimina relleno extra */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.google-login ion-icon {
+  font-size: 1rem; /* Ajusta el tamaño del icono */
+  margin-right: 8px; /* Espacio entre el icono y el texto */
+  color: #ffffff; /* Color del icono */
+}
+
+.facebook-login {
+  --background: #3b5998; /* Color azul característico de Facebook */
+  color: #ffffff; /* Texto blanco */
+  font-weight: bold;
+  font-size: 0.9rem; /* Tamaño del texto */
+  width: 70%; /* Ancho del botón */
+  height: 40px; /* Altura del botón */
+  border-radius: 20px; /* Bordes redondeados */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; /* Sin relleno extra */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.facebook-login ion-icon {
+  font-size: 1rem; /* Tamaño del icono */
+  margin-right: 8px; /* Espacio entre el icono y el texto */
+  color: #ffffff; /* Color del icono */
+}
+

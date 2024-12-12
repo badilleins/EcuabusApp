@@ -1,0 +1,113 @@
+/* Centrado general */
+ion-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    --background: #FCFCFC;
+    height: 100%;
+    padding: 30px;
+  }
+  
+  .center-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    margin-top: -40px; /* Espacio superior */
+  }
+  
+  .title-container h1 {
+    font-size: 2.5rem;
+    color: #f6ba67;
+    font-weight: bold;
+  }
+  
+  .img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px; /* Espacio entre la imagen y el formulario */
+  }
+  
+  .img-container img {
+    max-width: 150px; /* Ajusta el tamaño máximo de la imagen */
+    height: auto; /* Mantiene la proporción */
+  }
+  
+  .register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #4B5057;
+  }
+  
+  .input-field {
+    width: 100%;
+    border: none; /* Sin bordes */
+    background: #EEEEEE; /* Color de fondo */
+    border-radius: 30px; /* Hace que los bordes sean redondeados */
+    padding: 10px 20px; /* Espaciado interno para más estilo */
+    font-size: 1rem;
+    color: #4B5057;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+    transition: box-shadow 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
+  }
+  
+  .input-field:focus {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Resalta al enfocar */
+    transform: scale(1.02); /* Efecto de leve aumento */
+    outline: none; /* Sin contorno */
+  }
+  
+  ion-button {
+    width: 100%;
+    border-radius: 50px;
+    --background: #606060;
+    padding: 10px;
+    color: #f6ba67;
+    font-weight: bold;
+  }
+
+  ion-button::part(native) {
+    border-radius: 80px !important; /* Bordes aún más redondeados */
+  }
+
+  .error {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+  
+  .back-button {
+    /* Tamaño del botón */
+    width: 80px;              /* Ancho adecuado */
+    height: 70px;             /* Alto adecuado */
+    border-radius: 50%;       /* Forma circular */
+    
+    /* Centramos el contenido */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .back-button ion-icon {
+    font-size: 30px;          /* Tamaño del ícono ajustado */
+  }
+  
+  
