@@ -53,4 +53,12 @@ export class FirebaseService {
   }
 
 
+  addSubcollectionDocument(collection: string, documentId: string, subcollection: string, data: any) {
+    return this.firestore
+      .collection(collection)
+      .doc(documentId)
+      .collection(subcollection)
+      .add(data);
+  }
+
 }

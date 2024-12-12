@@ -6,7 +6,7 @@ import { Frecuency } from '../models/frequency';
 import { Bus } from '../models/bus';
 import { Seat } from '../models/seat';
 import { Trip } from '../models/trip';
-
+import { AuthService } from '../login/services/auth.service';
 
 
 @Component({
@@ -17,6 +17,8 @@ import { Trip } from '../models/trip';
 export class Tab1Page {
 
   firebaseSvc=inject(FirebaseService)
+
+  authSrv=inject(AuthService)
 
   cooperatives:any[]=[]
   routes:Route[]=[]
@@ -73,7 +75,15 @@ export class Tab1Page {
   seatCost  : number =0
   busNumber : number = 0
   busIds:string[]=[]
+  subtotal:number=0
+  iva:number=0
+  total:number=0
 
+  //Orden de pago
+
+  userName: string | null = null;
+  frecuencyID: string =""
+  tripId:string =""
 
   ngOnInit(){
     this.obtainCooperatives()
@@ -106,16 +116,17 @@ export class Tab1Page {
   }
   goPayOrder(){
     this.currentList = 3;
-  }
+    this.authSrv.getCurrentUserDisplayName().subscribe(displayName => {
+      this.userName =  displayName?.toString().split('@')[0] || 'Invitado';
+    });
+    this.establishPayments()
+    }
 
 
 
   constructor() {
   }
 
-  onSelectionChange() {
-
-  }
   openCalendar(){
     console.log("open calendar")
     this.isCalendarOpen = true;
@@ -134,12 +145,9 @@ export class Tab1Page {
   }
   async obtainCooperatives(){
     this.firebaseSvc.getAllDocuments('cooperatives').subscribe(documents => {
-      // Guardar los documentos obtenidos
       this.cooperatives = documents;
       console.log(this.cooperatives)
-      // Extraer los nombres de las cooperativas
       this.cooperativesNames = this.cooperatives.map(coop => coop.name);
-      // Verificar en consola
       console.log('Nombres de cooperativas:', this.cooperativesNames);
       this.obtainFrecuencies()
     }, error => {
@@ -257,7 +265,6 @@ export class Tab1Page {
               this.obtainHours()
               this.origins.push(rutaRoute.route_start)
               this.destinations.push(rutaRoute.route_end);
-              // this.destinations.push(...rutaRoute.route_stops);
               this.hours.push(this.frecuencies[i].hour_start)
               this.hoursFiltered.push(this.frecuencies[i].hour_start)
             }
@@ -472,7 +479,8 @@ obtainSeats(cooperative: string | null) {
           viajes.forEach(viaje => {
             if (viaje.freq_id === cooperative) {
               this.trips.push({ ...viaje, busId });
-
+              this.frecuencyID = viaje.freq_id
+              this.tripId=viaje.id
               const matchingBus = buses.find(bus => bus.id === busId);
               console.log(buses)
 
@@ -550,6 +558,34 @@ obtainSeats(cooperative: string | null) {
     }
   }
 
+
+  establishPayments(){
+    this.subtotal = this.seatCost * parseInt(this.selectedSeatsNumber,10)
+    this.iva = this.subtotal * 15 / 100
+    this.total = this.subtotal+this.iva
+  }
+
+  async saveTicket() {
+    const ticketData = {
+      tripId:this.tripId,
+      userId: this.userName,
+      frecuencyId: this.frecuencyID,
+      date: this.selectedDate,
+      seatType: this.selectedSeat,
+      numberOfSeats: this.selectedSeatsNumber,
+      total: this.total,
+      paymentMethod: this.selectedMethod,
+      busNumber: this.busNumber,
+    };
+
+    try {
+      await this.firebaseSvc.addSubcollectionDocument('cooperatives', this.selectedCooperativeId, 'boletos', ticketData);
+      alert('Boleto guardado con éxito');
+      this.currentList=1
+    } catch (error) {
+      console.error('Error al guardar boleto:', error);
+    }
+  }
 
 }
 

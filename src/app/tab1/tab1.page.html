@@ -220,29 +220,29 @@
 
   <div class="pay_detail">
   <ion-item lines="none">
-    <p><b>Órden de pago N: <span> 3</span></b></p>
+    <p><b>Órden de pago<span></span></b></p>
   </ion-item>
   <ion-item lines="none">
-    <p>Viaje de <span>Ambato</span> a <span>Loja</span></p>
+    <p>Viaje de <span>{{selectedOrigin}}</span> a <span>{{selectedDestination}}</span></p>
   </ion-item>
   <ion-item lines="none">
-    <p><b>Pasajero:</b> <span> Izurieta Freire Kevin Daniel</span></p>
+    <p><b>Pasajero:</b> <span>{{userName}}</span></p>
   </ion-item >
   <ion-item lines="none">
-    <p><b>Subtotal:</b> $<span class="pay_amount">4</span></p>
+    <p><b>Subtotal:</b> $<span class="pay_amount">{{subtotal}}</span></p>
   </ion-item>
   <ion-item lines="none">
 
-    <p><b>Iva:</b> $<span class="pay_amount">1</span></p>
+    <p><b>Iva:</b> $<span class="pay_amount">{{iva}}</span></p>
   </ion-item>
   <ion-item lines="none">
 
-    <p><b>Total: </b>$<span class="pay_amount">5</span></p>
+    <p><b>Total: </b>$<span class="pay_amount">{{total}}</span></p>
   </ion-item>
 </div>
 
   <ion-item lines="none">
-   <ion-button expand="block" class="next-button" shape="round">Generar</ion-button>
+   <ion-button expand="block" class="next-button" shape="round" (click)="saveTicket()">Generar</ion-button>
   </ion-item>
 </ion-list>
 
