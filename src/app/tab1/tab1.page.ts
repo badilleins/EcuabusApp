@@ -29,7 +29,7 @@ export class Tab1Page {
   selectedCooperative:string="";
   selectedOrigin: string = "";
   selectedDestination: string="";
-  selectedDate: Date = new Date();
+  selectedDate: Date | null  = null;
   selectedHour: string="";
   selectedSeat:string="";
   selectedSeatsNumber: string = "";
@@ -88,13 +88,33 @@ export class Tab1Page {
   ngOnInit(){
     this.obtainCooperatives()
     this.updateCalendar();
-
 }
 
   currentList: number = 1;
 
 
+isInitialFormValid():boolean{
+  return (
+    this.selectedCooperative !=="" &&
+    this.selectedOrigin !== "" &&
+    this.selectedDestination !== "" &&
+    this.selectedHour !== "" &&
+    this.selectedDate !== null
+  )
+}
+
+isDetailsFormValid():boolean{
+  return (
+    this.selectedSeat !== "" &&
+    this.seatCost !== 0 &&
+    this.selectedSeatsNumber !== "" &&
+    this.selectedMethod !== "" &&
+    this.busNumber !== 0
+  )
+}
+
   goNext() {
+    if(this.isInitialFormValid()){
       for(let i =0; i < this.frecuencies.length; i++){
         if(this.frecuencies[i].hour_start == this.selectedHour){
           for(let j=0; j< this.routes.length; j++){
@@ -107,6 +127,7 @@ export class Tab1Page {
           }
         }
       }
+    }
     this.currentList = 2;
   }
 
@@ -115,14 +136,19 @@ export class Tab1Page {
     this.currentList = 1;
   }
   goPayOrder(){
+    if(this.isDetailsFormValid()){
     this.currentList = 3;
     this.authSrv.getCurrentUserDisplayName().subscribe(displayName => {
       this.userName =  displayName?.toString().split('@')[0] || 'Invitado';
     });
     this.establishPayments()
+
     }
 
-
+  }
+goBack2(){
+  this.currentList=2
+}
 
   constructor() {
   }
@@ -353,10 +379,16 @@ export class Tab1Page {
 
               isEnabled(day: number | null): boolean {
                 if (day === null) return false;
-                const date = new Date(this.currentYear, this.currentMonth, day);
-                return this.enabledWeekdays.has(date.getDay());
-              }
 
+                const today = new Date();
+                const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                const date = new Date(this.currentYear, this.currentMonth, day);
+
+                return (
+                  this.enabledWeekdays.has(date.getDay()) &&
+                  date >= todayStart
+                );
+              }
 
               previousMonth() {
                 if (this.currentMonth === 0) {
@@ -454,6 +486,7 @@ loadEnableDays(){
 }
 
 obtainSeats(cooperative: string | null) {
+  this.seatTypes = []
   if (!cooperative) return;
 
   this.busIds = [];
@@ -582,6 +615,19 @@ obtainSeats(cooperative: string | null) {
       await this.firebaseSvc.addSubcollectionDocument('cooperatives', this.selectedCooperativeId, 'boletos', ticketData);
       alert('Boleto guardado con éxito');
       this.currentList=1
+      this.selectedDate = null
+      this.selectedCooperative=""
+      this.selectedOrigin = ""
+      this.selectedDestination=""
+      this.selectedHour=""
+      this.selectedSeat = ""
+      this.selectedSeatsNumber = ""
+      this.selectedSeatsNumber = ""
+      this.selectedMethod =""
+      this.seatCost=0
+      this.selectedMethod = ""
+      this.busNumber = 0
+
     } catch (error) {
       console.error('Error al guardar boleto:', error);
     }

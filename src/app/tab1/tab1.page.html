@@ -156,7 +156,8 @@
 
 
     <ion-item lines="none">
-      <ion-button expand="block" class="next-button" shape="round" (click)="goNext()">Siguiente</ion-button>
+      <ion-button expand="block" class="next-button" shape="round" (click)="goNext()"
+      [disabled]="!isInitialFormValid()">Siguiente</ion-button>
     </ion-item>
   </ion-list>
 
@@ -210,7 +211,8 @@
 
 <ion-item lines="none" class="details-buttons">
   <ion-button expand="block" class="next-button" shape="round" (click)="goBack()">Anterior</ion-button>
- <ion-button expand="block" class="next-button" shape="round" (click)="goPayOrder()">Siguiente</ion-button>
+ <ion-button expand="block" class="next-button" shape="round" (click)="goPayOrder()"
+ [disabled]="!isDetailsFormValid()">Siguiente</ion-button>
 </ion-item>
 </ion-list>
 
@@ -242,7 +244,8 @@
 </div>
 
   <ion-item lines="none">
-   <ion-button expand="block" class="next-button" shape="round" (click)="saveTicket()">Generar</ion-button>
+    <ion-button expand="block" class="next-button" shape="round" (click)="goBack2()">Anterior</ion-button>
+   <ion-button expand="block" class="next-button" shape="round" (click)="saveTicket()">Guardar</ion-button>
   </ion-item>
 </ion-list>
 
