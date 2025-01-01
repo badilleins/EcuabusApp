@@ -1,0 +1,32 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Transacciones</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Transacciones</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="table-container">
+    <div class="row header">
+      <div class="col">Fecha</div>
+      <div class="col">Precio</div>
+      <div class="col">Ruta ID</div>
+      <div class="col">Usuario</div>
+      <div class="col">Cooperativa</div>
+    </div>
+
+    <!-- Fila dinámica -->
+    <div class="row" *ngFor="let transaccion of transacciones">
+      <div class="col">{{ transaccion.fecha }}</div>
+      <div class="col">{{ transaccion.precio }}</div>
+      <div class="col">{{ transaccion.rutaId }}</div>
+      <div class="col">{{ transaccion.userId }}</div>
+      <div class="col">{{ transaccion.cooperativaName }}</div>
+    </div>
+  </div>
+</ion-content>

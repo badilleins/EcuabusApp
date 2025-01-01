@@ -1,0 +1,41 @@
+ion-content {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 100%; /* Asegura que ocupe todo el alto de la pantalla */
+    padding: 16px; /* Espacio entre la tabla y los bordes de la pantalla */
+  }
+  
+  .table-container {
+    width: 100%;
+    max-width: 80%; /* Limita el ancho máximo de la tabla */
+    border: 1px solid #ccc; /* Bordes de la tabla */
+    border-radius: 8px; /* Esquinas redondeadas */
+    overflow: hidden; /* Evita que los bordes sobresalgan */
+    background-color: #fff; /* Fondo blanco para la tabla */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para el diseño */
+  }
+  
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .header {
+    font-weight: bold;
+    background-color: #f4f4f4;
+    border-bottom: 2px solid #000;
+  }
+  
+  .col {
+    flex: 1 1 20%; /* Ajusta el ancho de las columnas */
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .row:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Transaccion } from '../models/transactions'; // Asegúrate de tener esta interface
 
 @Component({
   selector: 'app-pagos',
@@ -9,7 +11,10 @@ import { AlertController } from '@ionic/angular';
 export class PagosPage implements OnInit {
   metodoSeleccionado: string | null = null;
 
-  constructor(private alertController: AlertController) {}
+  constructor(
+    private alertController: AlertController,
+    private firestore: AngularFirestore
+  ) {}
 
   ngOnInit() {
     // Verificar si el script de PayPal ya está cargado
@@ -44,7 +49,7 @@ export class PagosPage implements OnInit {
           purchase_units: [
             {
               amount: {
-                value: '15.00', // Ajusta esto según el monto real
+                value: '0.99', // Ajusta esto según el monto real del boleto
               },
             },
           ],
@@ -53,12 +58,64 @@ export class PagosPage implements OnInit {
       onApprove: async (data: any, actions: any) => {
         // Procesar el pago una vez aprobado
         const order = await actions.order.capture();
-        const alert = await this.alertController.create({
-          header: 'Pago Exitoso',
-          message: `Pago realizado con éxito. Gracias por tu compra.`,
-          buttons: ['OK'],
-        });
-        await alert.present();
+
+        // Consultar la cooperativa para obtener el nombre y precio
+        try {
+          // Usar el uid de la cooperativa "Chimborazo" para obtener el documento
+          const cooperativaRef = this.firestore.collection('cooperatives').doc('t0mLWioavjJciKNS3HC3'); // Usamos el uid como ID del documento
+          const docSnapshot = await cooperativaRef.get().toPromise(); // Obtener el documento
+          
+          // Verificar si el documento existe y no es undefined
+          if (docSnapshot && docSnapshot.exists) {
+            const cooperativa = docSnapshot.data() as { price: string, name: string, uid: string };
+
+            if (cooperativa) {
+              const transactionData: Transaccion = {
+                fecha: new Date().toLocaleString(), // Fecha actual del pago
+                precio: '0.99', // Precio obtenido de la cooperativa
+                rutaId: 't0mLWioavjJciKNS3HC1', // Aquí pones el ID de la ruta correspondiente
+                userId: 'sbadillo3725', // ID del usuario que realiza el pago
+                cooperativaName: cooperativa.name, // Nombre de la cooperativa
+              };
+
+              // Intentar guardar la transacción en Firestore dentro de 'Transacciones'
+              try {
+                await cooperativaRef.collection('Transacciones').add(transactionData);
+                const alert = await this.alertController.create({
+                  header: 'Pago Exitoso',
+                  message: `Pago realizado con éxito en la cooperativa ${cooperativa.name}. Gracias por tu compra.`,
+                  buttons: ['OK'],
+                });
+                await alert.present();
+              } catch (transactionError) {
+                // Si hay un error al guardar la transacción, mostrar el detalle
+                console.error('Error al registrar la transacción:', transactionError);
+                const alert = await this.alertController.create({
+                  header: 'Error',
+                  message: 'Hubo un error al registrar la transacción. Verifica los detalles.',
+                  buttons: ['OK'],
+                });
+                await alert.present();
+              }
+            }
+          } else {
+            console.error('La cooperativa no fue encontrada en Firestore');
+            const alert = await this.alertController.create({
+              header: 'Error',
+              message: 'No se pudo encontrar la cooperativa.',
+              buttons: ['OK'],
+            });
+            await alert.present();
+          }
+        } catch (error) {
+          console.error('Error al obtener la cooperativa:', error);
+          const alert = await this.alertController.create({
+            header: 'Error',
+            message: 'Hubo un error al obtener la cooperativa.',
+            buttons: ['OK'],
+          });
+          await alert.present();
+        }
       },
       onError: (err: any) => {
         console.error('Error en el pago de PayPal:', err);
