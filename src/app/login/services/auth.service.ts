@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat/app';
-import { map, Observable } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 
 
 @Injectable({
@@ -9,7 +10,7 @@ import { map, Observable } from 'rxjs';
 })
 export class AuthService {
 
-  constructor(private afAuth: AngularFireAuth) { }
+  constructor(private afAuth: AngularFireAuth, private firestore: AngularFirestore) { }
 
   // Login
   async login(email: string, password: string): Promise<any> {
@@ -50,7 +51,6 @@ export class AuthService {
 
   // Obtener usuario actual
   getCurrentUser() {
-
     return this.afAuth.authState;
   }
 
@@ -63,6 +63,51 @@ export class AuthService {
       map(user => user ? user.displayName || user.email : null)
     );
   }
+
+ // Función para verificar si el usuario tiene el rol de 'cobrador'
+ checkIfUserIsCobrador(): Observable<boolean> {
+  return new Observable<boolean>((observer) => {
+    this.afAuth.authState.subscribe((user) => {
+      if (!user) {
+        observer.next(false);
+        observer.complete();
+        return;
+      }
+
+      const userEmail = user.email;
+
+      this.firestore.collection('cooperatives').get().subscribe((cooperativesSnapshot) => {
+        if (cooperativesSnapshot.empty) {
+          observer.next(false);
+          observer.complete();
+          return;
+        }
+
+        const driverChecks = cooperativesSnapshot.docs.map((coopDoc) =>
+          this.firestore
+            .collection('cooperatives')
+            .doc(coopDoc.id)
+            .collection('drivers', (ref) => ref.where('email', '==', userEmail))
+            .get()
+            .pipe(
+              map((driversSnapshot) => {
+                if (!driversSnapshot.empty) {
+                  return driversSnapshot.docs.some((driverDoc) => driverDoc.data()['rol'] === 'Cobrador');
+                }
+                return false;
+              })
+            )
+        );
+
+        forkJoin(driverChecks).subscribe((results) => {
+          const isCobrador = results.some((result) => result === true);
+          observer.next(isCobrador);
+          observer.complete();
+        });
+      });
+    });
+  });
+}
 
 
 
