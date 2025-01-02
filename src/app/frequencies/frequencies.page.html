@@ -1,0 +1,108 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Frequencies</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Frequencies</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="ion-padding">
+    <!-- Formulario -->
+    <form>
+      <ion-list>
+        <!-- Hour Start -->
+        <ion-item>
+          <ion-label position="stacked">Hour Start</ion-label>
+          <ion-input id="hour_start" type="text" required placeholder="Enter start hour"></ion-input>
+        </ion-item>
+    
+        <!-- Hour End -->
+        <ion-item>
+          <ion-label position="stacked">Hour End</ion-label>
+          <ion-input id="hour_end" type="text" required placeholder="Enter end hour"></ion-input>
+        </ion-item>
+    
+        <!-- Days -->
+        <ion-item>
+          <ion-label position="stacked">Days (comma separated)</ion-label>
+          <ion-input id="days" type="text" required placeholder="e.g., Monday, Tuesday"></ion-input>
+        </ion-item>
+    
+        <!-- Available -->
+        <ion-item>
+          <ion-label>Available</ion-label>
+          <ion-checkbox id="available" slot="start"></ion-checkbox>
+        </ion-item>
+    
+        <!-- Direct -->
+        <ion-item>
+          <ion-label>Direct</ion-label>
+          <ion-checkbox id="direct" slot="start"></ion-checkbox>
+        </ion-item>
+    
+        <!-- ID Route -->
+        <ion-item>
+          <ion-label position="stacked">ID Route</ion-label>
+          <ion-input id="id_route" type="text" required placeholder="Enter route ID"></ion-input>
+        </ion-item>
+      </ion-list>
+    
+      <!-- Save Button -->
+      <ion-button expand="block" (click)="guardarFrecuencia()">Guardar Frecuencia</ion-button>
+    </form>
+    
+
+    <!-- Tabla para mostrar los datos -->
+
+    <div class="ion-margin-top">
+      <h2>Lista de Frecuencias</h2>
+      <ion-grid>
+        <!-- Encabezados de la tabla -->
+        <ion-row>
+          <ion-col><strong>Hour Start</strong></ion-col>
+          <ion-col><strong>Hour End</strong></ion-col>
+          <ion-col><strong>Days</strong></ion-col>
+          <ion-col><strong>Available</strong></ion-col>
+          <ion-col><strong>Direct</strong></ion-col>
+          <ion-col><strong>ID Route</strong></ion-col>
+        </ion-row>
+    
+        <!-- Filas dinámicas -->
+        <ion-row *ngFor="let frequency of frequencies">
+          <ion-col>{{ frequency.hour_start }}</ion-col>
+          <ion-col>{{ frequency.hour_end }}</ion-col>
+          <ion-col>{{ frequency.days.join(', ') }}</ion-col>
+          <ion-col>{{ frequency.available ? 'Yes' : 'No' }}</ion-col>
+          <ion-col>{{ frequency.direct ? 'Yes' : 'No' }}</ion-col>
+          <ion-col>{{ frequency.id_route }}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <div class="ion-margin-top">
+      <h2>Lista de rutas</h2>
+      <ion-grid>
+        <!-- Encabezados de la tabla -->
+        <ion-row>
+          <ion-col><strong>route_id</strong></ion-col>
+          <ion-col><strong>route_start</strong></ion-col>
+          <ion-col><strong>route_end</strong></ion-col>
+          <ion-col><strong>route_stops</strong></ion-col>
+        </ion-row>
+    
+        <!-- Filas dinámicas -->
+        <ion-row *ngFor="let route of routes">
+          <ion-col>{{ route.route_id }}</ion-col>
+          <ion-col>{{ route.route_start }}</ion-col>
+          <ion-col>{{ route.route_end}}</ion-col>
+          <ion-col>{{ route.route_stops}}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+</ion-content>

@@ -29,6 +29,10 @@ const routes: Routes = [
   },  {
     path: 'transacciones',
     loadChildren: () => import('./transacciones/transacciones.module').then( m => m.TransaccionesPageModule)
+  },
+  {
+    path: 'frequencies',
+    loadChildren: () => import('./frequencies/frequencies.module').then( m => m.FrequenciesPageModule)
   }
 
  
