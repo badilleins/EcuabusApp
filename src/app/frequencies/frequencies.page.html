@@ -53,8 +53,10 @@
       </ion-list>
     
       <!-- Save Button -->
-      <ion-button expand="block" (click)="guardarFrecuencia()">Guardar Frecuencia</ion-button>
+      <ion-button expand="block" (click)="guardarFrecuencia()" [disabled]="isEditMode">Guardar Frecuencia</ion-button>
+      <ion-button expand="block" (click)="editarFrecuencia()">Editar</ion-button>
     </form>
+    
     
 
     <!-- Tabla para mostrar los datos -->
@@ -64,25 +66,34 @@
       <ion-grid>
         <!-- Encabezados de la tabla -->
         <ion-row>
+          <ion-col><strong>ID</strong></ion-col>
           <ion-col><strong>Hour Start</strong></ion-col>
           <ion-col><strong>Hour End</strong></ion-col>
           <ion-col><strong>Days</strong></ion-col>
           <ion-col><strong>Available</strong></ion-col>
           <ion-col><strong>Direct</strong></ion-col>
           <ion-col><strong>ID Route</strong></ion-col>
+          <ion-col><strong>Actions</strong></ion-col> <!-- Nueva columna para acciones -->
         </ion-row>
     
         <!-- Filas dinámicas -->
         <ion-row *ngFor="let frequency of frequencies">
+          <ion-col>{{ frequency.id_freq }}</ion-col>
           <ion-col>{{ frequency.hour_start }}</ion-col>
           <ion-col>{{ frequency.hour_end }}</ion-col>
           <ion-col>{{ frequency.days.join(', ') }}</ion-col>
           <ion-col>{{ frequency.available ? 'Yes' : 'No' }}</ion-col>
           <ion-col>{{ frequency.direct ? 'Yes' : 'No' }}</ion-col>
           <ion-col>{{ frequency.id_route }}</ion-col>
+          <ion-col>
+            <!-- Botones de acción -->
+            <ion-button color="primary" (click)="editFrequency(frequency)">Editar</ion-button>
+            <ion-button color="danger" (click)="deleteFrequency(frequency)">Eliminar</ion-button>
+          </ion-col>
         </ion-row>
       </ion-grid>
     </div>
+    
 
     <div class="ion-margin-top">
       <h2>Lista de rutas</h2>

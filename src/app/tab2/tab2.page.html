@@ -20,8 +20,8 @@
       <!-- Iteración dinámica de boletos -->
       <ion-item *ngFor="let boleto of boletos; let i = index" button (click)="toggleItem(i)">
         <ion-label>
-          <h2>{{ boleto.ticket_id }}</h2>
-          <p>{{ boleto.ticket_busNumber }} - {{ boleto.ticket_date }}</p>
+          <h2>{{ boleto.ticket_date }}</h2>
+          <p>Numero de bus:{{ boleto.ticket_busNumber }}</p>
         </ion-label>
       
         <!-- Mostrar tarjeta si el índice coincide -->

@@ -1,0 +1,17 @@
+// Clase para el botón Cancelar
+.cancel-button {
+    background-color: rgb(202, 31, 31) !important;
+    color: #000 !important;
+  }
+  
+  // Clase para el botón Eliminar
+  .delete-button {
+    background-color: #f44336 !important;  // Color de fondo rojo
+    color: white !important;               // Texto blanco
+  }
+  
+  // Cambiar el color del fondo del modal si lo deseas
+  .alert-wrapper {
+    background-color: #00ff62 !important;  // Fondo del modal
+  }
+  
