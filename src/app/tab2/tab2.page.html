@@ -28,6 +28,12 @@
 
         <!-- Botón para descargar el PDF -->
         <ion-button expand="full" class="rounded-button" (click)="generatePDF(boleto)">Descargar</ion-button>
+
+        <!-- Botón de GPS para redirigir al mapa -->
+        <ion-button expand="full" class="rounded-button" (click)="goToTab3()">
+          <ion-icon name="locate" slot="start"></ion-icon>
+          Ver en el mapa
+        </ion-button>
       </ion-card-content>
     </ion-card>
   </ion-list>
