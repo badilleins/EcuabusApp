@@ -1,9 +1,93 @@
-ion-content{
-  --background: var(--ion-color-primary);
+/* Estilos generales para el ion-content */
+ion-content {
+  --background: #ffffff; /* Cambia el fondo a blanco */
 }
-ion-toolbar{
-  --background: var(--ion-color-secondary);
+
+/* Estilos para el ion-toolbar */
+ion-toolbar {
+  --background: var(--ion-color-secondary); /* Color de fondo del toolbar */
 }
-ion-title{
-  --color: var(--ion-color-secondary-contrast);
+
+/* Estilos para el ion-title */
+ion-title {
+  --color: var(--ion-color-secondary-contrast); /* Color del texto del título */
+}
+
+/* Margen para las tarjetas */
+ion-card {
+  margin: 10px 0; /* Espaciado entre tarjetas */
+}
+
+/* Estilo para el estado vacío */
+.empty-state {
+  text-align: center;
+  padding: 20px;
+  color: gray; /* Color del texto para el estado vacío */
+}
+
+/* Estilos para el contenedor principal */
+.home_content {
+  --background: #ffffff; /* Cambia el fondo a blanco */
+  text-align: center;
+  overflow: show;
+}
+
+/* Estilos para la lista de opciones */
+.options-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto 0;
+  height: max-content;
+}
+
+/* Estilos para las tarjetas de boletos */
+.ticket-card {
+  background-color: #f6ba67; /* Color de fondo de la tarjeta */
+  border-radius: 10px; /* Esquinas redondeadas */
+  margin: 10px; /* Espaciado entre tarjetas */
+  width: 90%; /* Ancho de la tarjeta */
+  max-width: 500px; /* Ancho máximo de la tarjeta */
+  transition: transform 0.2s; /* Efecto de transición */
+}
+
+/* Efecto de hover para las tarjetas */
+.ticket-card:hover {
+  transform: scale(1.02); /* Efecto de hover */
+}
+
+/* Estilos para el título de la tarjeta */
+ion-card-title {
+  font-size: 18px; /* Tamaño del título */
+  font-weight: bold; /* Negrita */
+  color: var(--ion-color-secondary-contrast); /* Color del texto */
+}
+
+/* Estilos para el contenido de la tarjeta */
+ion-card-content {
+  font-size: 14px; /* Tamaño del contenido */
+  color: var(--ion-color-primary-contrast); /* Color del texto */
+}
+.rounded-button {
+  border-radius: 20px; /* Ajusta el valor según el redondeo que desees */
+}
+.no-boletos {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(128, 128, 128, 0.5); /* Gris translúcido */
+  color: white; /* Color del texto */
+  text-align: center;
+}
+
+.no-boletos p {
+  margin-top: 10px;
+  font-size: 20px; /* Tamaño del texto */
 }
