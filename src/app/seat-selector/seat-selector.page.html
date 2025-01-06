@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Seleccionar Asientos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="bus-layout">
+    <div *ngFor="let row of seats; let rowIndex = index" class="row">
+      <div
+        *ngFor="let seat of row; let seatIndex = index"
+        class="seat"
+        [class.vip]="seat.isVip"
+        [class.occupied]="seat.isOccupied"
+        [class.selected]="seat.isSelected"
+        (click)="selectSeat(rowIndex, seatIndex)"
+      >
+        {{ seat.number }}
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-color normal"></div>
+      <span>Normal</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color vip"></div>
+      <span>VIP</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color occupied"></div>
+      <span>Ocupado</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color selected"></div>
+      <span>Seleccionado</span>
+    </div>
+  </div>
+</ion-content>

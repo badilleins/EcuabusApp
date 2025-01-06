@@ -41,6 +41,10 @@ const routes: Routes = [
   {
     path: 'escaner',
     loadChildren: () => import('./escaner/escaner.module').then( m => m.EscanerPageModule)
+  },
+  {
+    path: 'seat-selector',
+    loadChildren: () => import('./seat-selector/seat-selector.module').then( m => m.SeatSelectorPageModule)
   }
 
 
