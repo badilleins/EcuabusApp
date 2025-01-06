@@ -2,6 +2,7 @@
   --background: var(--ion-color-primary);
   text-align: center;
   overflow: show;
+  color: var(--ion-color-gray);
 }
 ion-toolbar{
   --background: var(--ion-color-secondary);
@@ -77,149 +78,26 @@ ion-item{
     height: 50px;
 }
 
-.details-buttons{
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+ion-content h2, ion-content div{
+  color: var(--ion-color-gray);
 }
 
-
-.details-buttons button{
-  margin: 0 10px;
+#qr_card{
+  background-color: transparent;
+  border: #F87983 solid 0.2rem;
+  width: 20rem;
+  height: 20rem;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 20%;
 }
 
-.item-inner{
-  padding-right: 0;
-}
-.next-button{
-  --background: var(--ion-color-secondary);
-  margin: 10px;
-  width:100px;
-}
-
-p{
-  margin: 0;
-}
-
-.page-title {
-  font-size: 48px; /* Ajusta el tamaño del título */
-  font-weight: bold;
-  color: var(--ion-color-secondary);
-  margin-top: 10px;
-  }
-
-.page-subtitle {
-  font-size: 16px; /* Ajusta el tamaño del subtítulo */
-  color: gray; /* Cambia el color del texto */
-  margin-bottom: 20px;
-}
-span{
-  color: var(--ion-color-primary-contrast);
-}
-.pay_order{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--ion-color-primary);
-  }
-  .pay_detail p, .pay_detail span{
-    color: var(--ion-color-gray-contrast);
-  }
-  .pay_detail{
-    background: var(--ion-color-dark-tertiary);
-    border: 2px solid var(--ion-color-dark-tertiary-shade);
-    padding: 20px;
-    border-radius: 5px;
-  }
-.pay_amount{
-  margin-right: 0;
-}
-ion-datetime{
-  width: 100%;
-  height: 100%;
-}
-
-
-ion-grid {
-  --ion-grid-padding: 0;
-}
-
-ion-row {
-  display: flex;
+#btn_flash{
+  width: 8rem;
+  height: 8rem;
+  --background:var(--ion-color-tertiary);
+  --border-color:var(--ion-color-tertiary-shade);
+  border-radius: 20%;
   justify-content: center;
-}
-
-ion-col {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-ion-button {
-  --padding-start: 0.5rem;
-  --padding-end: 0.5rem;
-  --padding-top: 0.5rem;
-  --padding-bottom: 0.5rem;
-}
-
-
-ion-col.disabled div {
-  color: #ccc;
-  pointer-events: none;
-}
-
-.calendar-header {
-  background: var(--ion-color-dark-tertiary);
-  padding: 10px;
-
-  ion-label.current-month-year {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
-  }
-
-  ion-button {
-    --color: #007bff;
-    --ripple-color: #007bff;
-  }
-  #calendar-days{
-    background: #333;
-    color: #007bff;
-  }
-
-  #calendar_content{
-    --background: var(--ion-color-dark-tertiary) important;
-    padding: 20px;
-  }
-  ion-col.disabled {
-    color: #ccc; /* Color gris para días deshabilitados */
-    pointer-events: none; /* Desactiva interacción */
-    opacity: 0.5;
-  }
-
-  ion-col.current-month {
-    font-weight: bold;
-  }
-
-  ion-grid#calendar-days-header {
-    font-weight: bold;
-  }
-
-}
-#month-control button{
-  color: var(--ion-color-secondary);
-
-}
-.button-native {
-  color: none;
-}
-
-.ion-text-center{
-  color: var(--ion-color-secondary);
-  font-weight: 700;
-}
-
-#calendar-days-header{
-  margin-top: 20px;
+  margin: 0 auto;
 }

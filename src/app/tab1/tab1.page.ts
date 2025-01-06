@@ -1,9 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FirebaseService } from '../services/firebase.service';
-import { Cooperatives } from '../models/cooperatives';
 import { Route } from '../models/route';
 import { Frecuency } from '../models/frequency';
-import { Bus } from '../models/bus';
 import { Seat } from '../models/seat';
 import { Trip } from '../models/trip';
 import { AuthService } from '../login/services/auth.service';
@@ -29,7 +27,7 @@ export class Tab1Page {
   selectedCooperative:string="";
   selectedOrigin: string = "";
   selectedDestination: string="";
-  selectedDate: Date | null  = null;
+  selectedDate: Date | null = null;
   selectedHour: string="";
   selectedSeat:string="";
   selectedSeatsNumber: string = "";
@@ -39,10 +37,10 @@ export class Tab1Page {
 
   cooperativesNames : string[]=[];
   cooperativesIDNames:Object[] = []
-  origins :string[]=[];
-  originsFiltered:string[]=[]
-  destinationsFiltered:string[]=[]
-  destinations :string[]= [];
+  origins  = new Set<string>();
+  originsFiltered = new Set<string>()
+  destinationsFiltered=new Set<string>()
+  destinations= new Set<string>()
   stops :string[]=[];
   cooperativeSeats: string[]=[]
   cooperativeBuses:string[]=[]
@@ -50,8 +48,8 @@ export class Tab1Page {
   seatTypes:string[]=[]
 
 
-  hours :string []= [];
-  hoursFiltered:string[]=[]
+  hours = new Set<string>
+  hoursFiltered = new Set<string>
   seats : Seat[]=[]
   availableSeats : number[]=[]
   methods = ['Transferencia','Depósito','Paypal']
@@ -88,30 +86,33 @@ export class Tab1Page {
   ngOnInit(){
     this.obtainCooperatives()
     this.updateCalendar();
+
 }
+
+
 
   currentList: number = 1;
 
+  isInitialFormValid():boolean{
+    return (
+      this.selectedCooperative !=="" &&
+      this.selectedOrigin !== "" &&
+      this.selectedDestination !== "" &&
+      this.selectedHour !== "" &&
+      this.selectedDate !== null
+    )
+  }
 
-isInitialFormValid():boolean{
-  return (
-    this.selectedCooperative !=="" &&
-    this.selectedOrigin !== "" &&
-    this.selectedDestination !== "" &&
-    this.selectedHour !== "" &&
-    this.selectedDate !== null
-  )
-}
+  isDetailsFormValid():boolean{
+    return (
+      this.selectedSeat !== "" &&
+      this.seatCost !== 0 &&
+      this.selectedSeatsNumber !== "" &&
+      this.selectedMethod !== "" &&
+      this.busNumber !== 0
+    )
+  }
 
-isDetailsFormValid():boolean{
-  return (
-    this.selectedSeat !== "" &&
-    this.seatCost !== 0 &&
-    this.selectedSeatsNumber !== "" &&
-    this.selectedMethod !== "" &&
-    this.busNumber !== 0
-  )
-}
 
   goNext() {
     if(this.isInitialFormValid()){
@@ -132,6 +133,7 @@ isDetailsFormValid():boolean{
   }
 
 
+
   goBack() {
     this.currentList = 1;
   }
@@ -146,9 +148,11 @@ isDetailsFormValid():boolean{
     }
 
   }
-goBack2(){
-  this.currentList=2
-}
+
+  goBack2(){
+    this.currentList=2
+  }
+
 
   constructor() {
   }
@@ -231,82 +235,97 @@ goBack2(){
     this.obtainRoutes()
   }
 
-  async obtainRoutes(){
-    this.routes = []
-    this.origins=[]
-    this.destinations=[]
-    if(!this.selectedCooperative || this.selectedCooperative.trim() === ''){
-    for(let i=0; i<this.cooperatives.length;i++){
-      this.firebaseSvc.getSubcolection('cooperatives',this.cooperatives[i].id,'Rutas')
-      .subscribe(rutas =>{
-        rutas.forEach(ruta=>{
-           const rutaRoute:Route ={
-            route_start:ruta.route_start || '',
-            route_end:ruta.route_end || '',
-            route_stops:ruta.route_stops||[],
-            route_id:ruta.id
-          };
-          for (let i=0;i<this.frecuencies.length;i++) {
-            if(rutaRoute.route_id===this.frecuencies[i].id_route){
-              console.log("entre")
-              this.routes.push(rutaRoute)
-              this.obtainOrigins()
-              this.obtainDestinations()
-              this.obtainHours()
-              this.origins.push(rutaRoute.route_start)
-              this.originsFiltered.push(rutaRoute.route_start)
-              this.destinations.push(rutaRoute.route_end);
-              this.destinationsFiltered.push(rutaRoute.route_end);
-              this.hours.push(this.frecuencies[i].hour_start)
-              this.hoursFiltered.push(this.frecuencies[i].hour_start)
-            }
-          }
+  async obtainRoutes() {
+    this.routes = [];
+    this.origins.clear();
+    this.destinations.clear();
 
-      });
-    });
-  }
-  }
-  else {
-    for(let i=0; i < this.cooperatives.length;i++){
-        if(this.selectedCooperative===this.cooperatives[i].name){
-          this.selectedCooperativeId = this.cooperatives[i].id
-        }
+    const subscriptionPromises: Promise<void>[] = [];
+
+    if (!this.selectedCooperative || this.selectedCooperative.trim() === '') {
+      for (let i = 0; i < this.cooperatives.length; i++) {
+        const cooperativeId = this.cooperatives[i].id;
+        const promise = new Promise<void>((resolve) => {
+          this.firebaseSvc.getSubcolection('cooperatives', cooperativeId, 'Rutas')
+            .subscribe(rutas => {
+              rutas.forEach(ruta => {
+                const rutaRoute: Route = {
+                  route_start: ruta.route_start || '',
+                  route_end: ruta.route_end || '',
+                  route_stops: ruta.route_stops || [],
+                  route_id: ruta.id
+                };
+
+                for (let j = 0; j < this.frecuencies.length; j++) {
+                  if (rutaRoute.route_id === this.frecuencies[j].id_route) {
+                    this.routes.push(rutaRoute);
+                    this.origins.add(rutaRoute.route_start);
+                    this.originsFiltered.add(rutaRoute.route_start);
+                    this.destinations.add(rutaRoute.route_end);
+                    this.destinationsFiltered.add(rutaRoute.route_end);
+                    this.hours.add(this.frecuencies[j].hour_start);
+                    this.hoursFiltered.add(this.frecuencies[j].hour_start);
+                  }
+                }
+              });
+              resolve();
+            });
+        });
+        subscriptionPromises.push(promise);
+      }
+    } else {
+      const cooperative = this.cooperatives.find(coop => coop.name === this.selectedCooperative);
+      if (cooperative) {
+        const cooperativeId = cooperative.id;
+        const promise = new Promise<void>((resolve) => {
+          this.firebaseSvc.getSubcolection('cooperatives', cooperativeId, 'Rutas')
+            .subscribe(rutas => {
+              rutas.forEach(ruta => {
+                const rutaRoute: Route = {
+                  route_start: ruta.route_start || '',
+                  route_end: ruta.route_end || '',
+                  route_stops: ruta.route_stops || [],
+                  route_id: ruta.id
+                };
+
+                for (let j = 0; j < this.frecuencies.length; j++) {
+                  if (rutaRoute.route_id === this.frecuencies[j].id_route) {
+                    this.routes.push(rutaRoute);
+                    this.origins.add(rutaRoute.route_start);
+                    this.originsFiltered.add(rutaRoute.route_start);
+                    this.destinations.add(rutaRoute.route_end);
+                    this.destinationsFiltered.add(rutaRoute.route_end);
+                    this.hours.add(this.frecuencies[j].hour_start);
+                    this.hoursFiltered.add(this.frecuencies[j].hour_start);
+                  }
+                }
+              });
+              resolve(); // Marca la promesa como resuelta
+            });
+        });
+        subscriptionPromises.push(promise);
+      }
     }
-    this.firebaseSvc
-      .getSubcolection('cooperatives', this.selectedCooperativeId, 'Rutas')
-      .subscribe(rutas => {
-        rutas.forEach(ruta => {
-          const rutaRoute: Route = {
-            route_start: ruta.route_start || '',
-            route_end: ruta.route_end || '',
-            route_stops: ruta.route_stops || [],
-            route_id:ruta.id
-          };
-          for (let i=0;i<this.frecuencies.length;i++) {
-            if(rutaRoute.route_id===this.frecuencies[i].id_route){
-              console.log("entre2")
-              this.routes.push(rutaRoute)
-              this.obtainOrigins()
-              this.obtainDestinations()
-              this.obtainHours()
-              this.origins.push(rutaRoute.route_start)
-              this.destinations.push(rutaRoute.route_end);
-              this.hours.push(this.frecuencies[i].hour_start)
-              this.hoursFiltered.push(this.frecuencies[i].hour_start)
-            }
-          }
-      });
-      });
+
+    // Esperar a que todas las suscripciones se completen
+    await Promise.all(subscriptionPromises);
+
+    // Realizar la limpieza si no se encontraron rutas
+    if (this.routes.length === 0) {
+      console.log("No se encontraron rutas");
+      this.originsFiltered.clear();
+      this.destinationsFiltered.clear();
+      this.hoursFiltered.clear();
+    }
   }
-  console.log(this.routes)
-}
+
               obtainOrigins(){
                 if(this.selectedDestination !==""){
-                  this.originsFiltered = []
+                  this.originsFiltered.clear()
                   console.log("Obtengo origen 1")
                   for(let i=0 ; i <this.routes.length;i++){
                     if(this.selectedDestination==this.routes[i].route_end){
-                      this.originsFiltered.push(this.routes[i].route_start)
+                      this.originsFiltered.add(this.routes[i].route_start)
                     }
                   }
                 }
@@ -316,10 +335,10 @@ goBack2(){
 
               obtainDestinations(){
                 if(this.selectedOrigin!==""){
-                  this.destinationsFiltered = []
+                  this.destinationsFiltered.clear()
                   for(let i=0 ; i <this.routes.length;i++){
                     if(this.selectedOrigin==this.routes[i].route_start){
-                      this.destinationsFiltered.push(this.routes[i].route_end)
+                      this.destinationsFiltered.add(this.routes[i].route_end)
                     }
                   }
                 }
@@ -329,7 +348,7 @@ goBack2(){
 
               obtainHours(){
                   if(this.selectedOrigin!=="" && this.selectedDestination!==""){
-                      this.hoursFiltered =[]
+                      this.hoursFiltered.clear()
                       for(let i=0; i<this.routes.length;i++){
                           if(this.selectedOrigin==this.routes[i].route_start&&this.selectedDestination==this.routes[i].route_end){
                             for(let j=0; j< this.frecuencies.length ; j++){
@@ -337,7 +356,7 @@ goBack2(){
                               console.log(this.frecuencies[j].id_route)
 
                               if(this.routes[i].route_id==this.frecuencies[j].id_route){
-                                this.hoursFiltered.push(this.frecuencies[j].hour_start)
+                                this.hoursFiltered.add(this.frecuencies[j].hour_start)
                               }
                             }
 
@@ -379,16 +398,10 @@ goBack2(){
 
               isEnabled(day: number | null): boolean {
                 if (day === null) return false;
-
-                const today = new Date();
-                const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
                 const date = new Date(this.currentYear, this.currentMonth, day);
-
-                return (
-                  this.enabledWeekdays.has(date.getDay()) &&
-                  date >= todayStart
-                );
+                return this.enabledWeekdays.has(date.getDay());
               }
+
 
               previousMonth() {
                 if (this.currentMonth === 0) {
@@ -486,7 +499,6 @@ loadEnableDays(){
 }
 
 obtainSeats(cooperative: string | null) {
-  this.seatTypes = []
   if (!cooperative) return;
 
   this.busIds = [];
@@ -597,42 +609,52 @@ obtainSeats(cooperative: string | null) {
     this.iva = this.subtotal * 15 / 100
     this.total = this.subtotal+this.iva
   }
-
   async saveTicket() {
-    const ticketData = {
-      tripId:this.tripId,
-      userId: this.userName,
-      frecuencyId: this.frecuencyID,
-      date: this.selectedDate,
-      seatType: this.selectedSeat,
-      numberOfSeats: this.selectedSeatsNumber,
-      total: this.total,
-      paymentMethod: this.selectedMethod,
-      busNumber: this.busNumber,
-    };
-
     try {
-      await this.firebaseSvc.addSubcollectionDocument('cooperatives', this.selectedCooperativeId, 'boletos', ticketData);
-      alert('Boleto guardado con éxito');
-      this.currentList=1
-      this.selectedDate = null
-      this.selectedCooperative=""
-      this.selectedOrigin = ""
-      this.selectedDestination=""
-      this.selectedHour=""
-      this.selectedSeat = ""
-      this.selectedSeatsNumber = ""
-      this.selectedSeatsNumber = ""
-      this.selectedMethod =""
-      this.seatCost=0
-      this.selectedMethod = ""
-      this.busNumber = 0
+      for (let i = 0; i < parseInt(this.selectedSeatsNumber,10); i++) {
+        const ticketData = {
+          tripId: this.tripId,
+          userId: this.userName,
+          frecuencyId: this.frecuencyID,
+          date: this.selectedDate,
+          seatType: this.selectedSeat,
+          seatNumber: `Asiento-${i + 1}`,
+          total: this.total / parseInt(this.selectedSeatsNumber,10),
+          paymentMethod: this.selectedMethod,
+          busNumber: this.busNumber,
+          estado: 'disponible',
+        };
 
+        await this.firebaseSvc.addSubcollectionDocument(
+          'cooperatives',
+          this.selectedCooperativeId,
+          'boletos',
+          ticketData
+        );
+      }
+
+      alert('Boletos guardados con éxito');
+
+      this.resetForm();
     } catch (error) {
-      console.error('Error al guardar boleto:', error);
+      console.error('Error al guardar boletos:', error);
     }
   }
 
+
+
+  resetForm() {
+    this.currentList = 1;
+    this.selectedDate = null;
+    this.selectedCooperative = '';
+    this.selectedOrigin = '';
+    this.selectedDestination = '';
+    this.selectedHour = '';
+    this.selectedSeat = '';
+    this.selectedSeatsNumber = '';
+    this.selectedMethod = '';
+    this.seatCost = 0;
+    this.busNumber = 0;
+  }
+
 }
-
-
