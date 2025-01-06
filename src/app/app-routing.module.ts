@@ -26,6 +26,10 @@ const routes: Routes = [
   {
     path: 'pagos',
     loadChildren: () => import('./pagos/pagos.module').then( m => m.PagosPageModule)
+  },
+  {
+    path: 'seat-selector',
+    loadChildren: () => import('./seat-selector/seat-selector.module').then( m => m.SeatSelectorPageModule)
   }
  
 

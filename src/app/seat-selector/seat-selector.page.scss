@@ -1,0 +1,99 @@
+ion-content {
+    --background: #8d8d8d;
+    color: white;
+  
+    .bus-layout {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px 20px;
+      justify-items: center;
+      padding: 20px;
+      padding-top: 50px;
+  
+      .row {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        width: 100%;
+      }
+  
+      .seat {
+        margin-right: 10px;
+        width: 60px;
+        height: 60px;
+        gap: 5px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        background-color: #4ee953; 
+        &.vip {
+          background-color: #ffc107;
+          color: black;
+        }
+  
+        &.occupied {
+          background-color: #f44336;
+          color: white;
+          pointer-events: none;
+          opacity: 0.7;
+        }
+  
+        &.selected {
+          background-color: #03a9f4;
+          color: white;
+          transform: scale(1.1);
+        }
+  
+        &:hover:not(.occupied):not(.selected) {
+          background-color: #81c784;
+        }
+      }
+    }
+  
+    .legend {
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px;
+      border-top: 2px solid white;
+      margin-top: 40px;
+  
+      .legend-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+  
+        .legend-color {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          margin-right: 8px;
+          
+          &.normal {
+            background-color: #4ee953;
+          }
+  
+          &.vip {
+            background-color: #ffc107;
+          }
+  
+          &.occupied {
+            background-color: #f44336;
+          }
+  
+          &.selected {
+            background-color: #03a9f4;
+          }
+        }
+  
+        span {
+          font-size: 14px;
+          color: white; // Make all text white for better visibility
+        }
+      }
+    }
+  }
