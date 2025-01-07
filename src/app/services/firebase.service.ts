@@ -63,7 +63,7 @@ export class FirebaseService {
 
  async validateAndRegisterTicket(ticketId: string): Promise<string> {
     try {
-      const ticketDocRef = this.firestore.collection('tickets').doc(ticketId);
+      const ticketDocRef = this.firestore.collection('boletos').doc(ticketId);
       const ticketDoc = await ticketDocRef.ref.get();
 
       if (ticketDoc.exists) {
@@ -73,7 +73,7 @@ export class FirebaseService {
           return 'El boleto ya fue usado';
         }
 
-        await ticketDocRef.update({ estado: 'usado', fechaRegistro: new Date() });
+        await ticketDocRef.update({ estado: 'usado'});
         return 'Pasajero registrado exitosamente';
       } else {
         return 'El boleto no es válido';
