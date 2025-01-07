@@ -7,6 +7,5 @@ export interface Bus{
   brand:string,
   photo_url:string,
   seats_quantity:number,
-  bus_number:number,
-  id_bus:string
+    id_bus:string
 }

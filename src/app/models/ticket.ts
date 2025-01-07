@@ -1,4 +1,5 @@
 export interface Ticket{
+  id:string,
   busNumber:string,
   date:Date,
   frecuencyId:string,

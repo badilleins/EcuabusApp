@@ -84,5 +84,30 @@ export class FirebaseService {
     }
   }
 
+  async updateSeatStatus(
+    collection: string,
+    documentId: string,
+    busCollection: string,
+    busId:string,
+    seatsCollection:string,
+    seatId:string,
+    newStatus: string
+  ) {
+    try {
+      await this.firestore
+        .collection(collection)
+        .doc(documentId)
+        .collection(busCollection)
+        .doc(busId)
+        .collection(seatsCollection)
+        .doc(seatId)
+        .update({ status: newStatus });
+
+      console.log(`Asiento ${seatId} actualizado a ${newStatus}`);
+    } catch (error) {
+      console.error('Error al actualizar el estado del asiento:', error);
+    }
+  }
+
 }
 
