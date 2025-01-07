@@ -3,7 +3,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 import { Cooperatives } from '../models/cooperatives';
 import { Observable } from 'rxjs';
-
+import { Ticket } from '../models/ticket';
 
 @Injectable({
   providedIn: 'root'
@@ -24,10 +24,10 @@ export class FirebaseService {
     subcoleccion: string
   ): Observable<any[]> {
     return this.firestore
-      .collection(coleccion) // Colección principal
-      .doc(documentoId)      // Documento específico
-      .collection(subcoleccion) // Subcolección dentro del documento
-      .valueChanges({ idField: 'id' }); // Agrega el ID de los documentos automáticamente
+      .collection(coleccion)
+      .doc(documentoId)
+      .collection(subcoleccion)
+      .valueChanges({ idField: 'id' });
   }
   getSubcollectionDocuments(
     collection: string,
@@ -61,4 +61,53 @@ export class FirebaseService {
       .add(data);
   }
 
+ async validateAndRegisterTicket(ticketId: string): Promise<string> {
+    try {
+      const ticketDocRef = this.firestore.collection('boletos').doc(ticketId);
+      const ticketDoc = await ticketDocRef.ref.get();
+
+      if (ticketDoc.exists) {
+        const ticketData = ticketDoc.data() as Ticket;
+
+        if (ticketData?.['status'] === 'usado') {
+          return 'El boleto ya fue usado';
+        }
+
+        await ticketDocRef.update({ estado: 'usado'});
+        return 'Pasajero registrado exitosamente';
+      } else {
+        return 'El boleto no es válido';
+      }
+    } catch (error) {
+      console.error('Error al validar y registrar el ticket:', error);
+      return 'Ocurrió un error al procesar el ticket';
+    }
+  }
+
+  async updateSeatStatus(
+    collection: string,
+    documentId: string,
+    busCollection: string,
+    busId:string,
+    seatsCollection:string,
+    seatId:string,
+    newStatus: string
+  ) {
+    try {
+      await this.firestore
+        .collection(collection)
+        .doc(documentId)
+        .collection(busCollection)
+        .doc(busId)
+        .collection(seatsCollection)
+        .doc(seatId)
+        .update({ status: newStatus });
+
+      console.log(`Asiento ${seatId} actualizado a ${newStatus}`);
+    } catch (error) {
+      console.error('Error al actualizar el estado del asiento:', error);
+    }
+  }
+
 }
+

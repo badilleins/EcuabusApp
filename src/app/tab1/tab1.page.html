@@ -21,7 +21,7 @@
     <ion-item lines="none" class="custom-combobox">
       <ion-icon name="bus-outline" slot="start"></ion-icon>
       <ion-label class="label-info">Cooperativa</ion-label>
-      <ion-select [(ngModel)]="selectedCooperative" placeholder="Seleccionar Cooperativa" interface="popover" (ngModelChange)="obtainCooperatives()">
+      <ion-select [(ngModel)]="selectedCooperative" placeholder="Seleccionar Cooperativa" interface="popover" (ionChange)="onCooperativeChange($event)">
         <ion-select-option *ngFor="let coop of cooperativesNames" [value]="coop">
           {{ coop }}
         </ion-select-option>
@@ -156,7 +156,8 @@
 
 
     <ion-item lines="none">
-      <ion-button expand="block" class="next-button" shape="round" (click)="goNext()">Siguiente</ion-button>
+      <ion-button expand="block" class="next-button" shape="round" (click)="goNext()"
+      [disabled]="!isInitialFormValid()">Siguiente</ion-button>
     </ion-item>
   </ion-list>
 
@@ -166,30 +167,24 @@
     <p class="page-title">Ecuabus</p>
     <p class="page-subtitle">Detalles</p>
   <!-- Tipo de asiento -->
-  <ion-item lines="none" class="custom-combobox">
-    <ion-label>Tipo de asiento</ion-label>
-    <ion-select [(ngModel)]="selectedSeat" placeholder="Seleccionar asiento" interface="popover" (ngModelChange)="obtainCost()">
-      <ion-select-option *ngFor="let seat of seatTypes" [value]="seat">
-        {{ seat }}
-      </ion-select-option>
-    </ion-select>
-  </ion-item>
 
+
+
+  <ion-button (click)="openSelection()">Seleccionar Asientos</ion-button>
+  <ion-list class="seats_selected">
+    <ion-item *ngFor="let seat of selectedSeat">
+      Asiento {{ seat.number }} - {{ seat.category }} - {{ seat.status }}
+    </ion-item>
+  </ion-list>
   <!-- Costo por asiento -->
   <ion-item lines="none" class="custom-combobox">
     <ion-label>Costo asiento</ion-label>
     <span>{{seatCost}}</span>
+    <ion-button class="cost-question" (click)="showToastCost()">
+      <ion-icon name="help-outline" slot="end"></ion-icon>
+    </ion-button>
   </ion-item>
 
-  <!-- Número de asientos-->
-  <ion-item lines="none" class="custom-combobox">
-    <ion-label>N. Asientos</ion-label>
-    <ion-select [(ngModel)]="selectedSeatsNumber" placeholder="Seleccionar número" interface="popover" (click)="obtainSeatsNumber()">
-      <ion-select-option *ngFor="let seatsNumber of availableSeats" [value]="seatsNumber">
-        {{ seatsNumber}}
-      </ion-select-option>
-    </ion-select>
-  </ion-item>
 
 
   <!-- Método de pago -->
@@ -210,7 +205,8 @@
 
 <ion-item lines="none" class="details-buttons">
   <ion-button expand="block" class="next-button" shape="round" (click)="goBack()">Anterior</ion-button>
- <ion-button expand="block" class="next-button" shape="round" (click)="goPayOrder()">Siguiente</ion-button>
+ <ion-button expand="block" class="next-button" shape="round" (click)="goPayOrder()"
+ [disabled]="!isDetailsFormValid()">Siguiente</ion-button>
 </ion-item>
 </ion-list>
 
@@ -242,7 +238,8 @@
 </div>
 
   <ion-item lines="none">
-   <ion-button expand="block" class="next-button" shape="round" (click)="saveTicket()">Generar</ion-button>
+    <ion-button expand="block" class="next-button" shape="round" (click)="goBack2()">Anterior</ion-button>
+   <ion-button expand="block" class="next-button" shape="round" (click)="saveTicket()">Guardar</ion-button>
   </ion-item>
 </ion-list>
 

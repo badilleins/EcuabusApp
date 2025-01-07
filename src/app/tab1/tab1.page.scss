@@ -222,3 +222,20 @@ ion-col.disabled div {
 #calendar-days-header{
   margin-top: 20px;
 }
+
+ion-list{
+ color : var(--ion-color-gray);
+  background:transparent
+}
+
+.seats_selected ion-item{
+  background: var(--ion-color-dark-tertiary);
+  margin: 10px auto;
+}
+
+ion-item .cost-question{
+  border-radius: 20%;
+  margin-left: 10px;
+  width: 40px;
+  height: 30px;
+}

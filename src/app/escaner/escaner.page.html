@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Escaner</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="home_content" *ngIf="!qr.scan">
+<h2>Resultado: {{qr.scanResult}}</h2>
+
+<br>
+
+<div *ngIf="JsonObject">
+    <h3>Objtos qr</h3>
+    <ul *ngFor="let data of JsonData">
+      <li>{{data}}</li>
+    </ul>
+</div>
+</ion-content>
+
+<div *ngIf="qr.scan" style="background-color: transparent;">
+  <ion-card id="qr_card">
+
+  </ion-card>
+  <ion-button id="btn_flash" fill="outline" size="medium" (click)="flashLight()">
+    <ion-icon slot="end" name="flash"></ion-icon>
+  </ion-button>
+</div>
+<div *ngIf="userScanned">
+  <ion-button id="btn_registerUser" fill="outline" (click)="registerUser()"></ion-button>
+</div>
+<ion-footer>
+  <ion-button id="btn_qr" (click)="scan()">
+    Escanear
+  </ion-button>
+
+  <ion-toast
+  [isOpen]="toast.isOpen"
+  [message]="toast.message"
+  [color]="toast.color"
+  [duration]="3000">
+</ion-toast>
+
+</ion-footer>

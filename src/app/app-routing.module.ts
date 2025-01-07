@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
   {
@@ -13,7 +14,8 @@ const routes: Routes = [
   },
   {
     path: 'tabs',
-    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'register',
@@ -28,11 +30,23 @@ const routes: Routes = [
     loadChildren: () => import('./pagos/pagos.module').then( m => m.PagosPageModule)
   },
   {
+    path: 'conductor',
+    loadChildren:() =>import('./conductor-tabs/conductor-tabs.module').then(m=>m.ConductorTabsPageModule),
+    canActivate:[AuthGuard]
+  },
+  {
+    path: 'conductor-tabs',
+    loadChildren: () => import('./conductor-tabs/conductor-tabs.module').then( m => m.ConductorTabsPageModule)
+  },
+  {
+    path: 'escaner',
+    loadChildren: () => import('./escaner/escaner.module').then( m => m.EscanerPageModule)
+  },
+  {
     path: 'seat-selector',
     loadChildren: () => import('./seat-selector/seat-selector.module').then( m => m.SeatSelectorPageModule)
-  }
- 
-
+  },
+  {path:'', redirectTo:'/tabs/tabs1',pathMatch:'full'},
 ];
 @NgModule({
   imports: [

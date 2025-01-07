@@ -10,6 +10,8 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore'; // <-- 
 import { FullCalendarModule } from '@fullcalendar/angular';
 
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AuthGuard } from './auth.guard';
+import { SeatSelectorPageModule } from './seat-selector/seat-selector.module';
 
 
 @NgModule({
@@ -19,8 +21,9 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
           AppRoutingModule,
           AngularFireModule.initializeApp(environment.firebaseConfig),
           AngularFireAuthModule,
+          SeatSelectorPageModule
         ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, AuthGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

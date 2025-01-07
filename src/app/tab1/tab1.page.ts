@@ -1,12 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { FirebaseService } from '../services/firebase.service';
-import { Cooperatives } from '../models/cooperatives';
 import { Route } from '../models/route';
 import { Frecuency } from '../models/frequency';
-import { Bus } from '../models/bus';
 import { Seat } from '../models/seat';
 import { Trip } from '../models/trip';
 import { AuthService } from '../login/services/auth.service';
+import { Router } from '@angular/router';
+import { SeatService } from '../services/seat.service';
+import { ModalController, ToastController } from '@ionic/angular';
+import { SeatSelectorPage } from '../seat-selector/seat-selector.page';
 
 
 @Component({
@@ -17,8 +19,8 @@ import { AuthService } from '../login/services/auth.service';
 export class Tab1Page {
 
   firebaseSvc=inject(FirebaseService)
-
   authSrv=inject(AuthService)
+  seatSrv = inject(SeatService)
 
   cooperatives:any[]=[]
   routes:Route[]=[]
@@ -29,9 +31,9 @@ export class Tab1Page {
   selectedCooperative:string="";
   selectedOrigin: string = "";
   selectedDestination: string="";
-  selectedDate: Date = new Date();
+  selectedDate: Date | null = null;
   selectedHour: string="";
-  selectedSeat:string="";
+  selectedSeat: Seat[] = [];
   selectedSeatsNumber: string = "";
   selectedMethod: string="";
   selectedCooperativeId = "";
@@ -39,10 +41,10 @@ export class Tab1Page {
 
   cooperativesNames : string[]=[];
   cooperativesIDNames:Object[] = []
-  origins :string[]=[];
-  originsFiltered:string[]=[]
-  destinationsFiltered:string[]=[]
-  destinations :string[]= [];
+  origins  = new Set<string>();
+  originsFiltered = new Set<string>()
+  destinationsFiltered=new Set<string>()
+  destinations= new Set<string>()
   stops :string[]=[];
   cooperativeSeats: string[]=[]
   cooperativeBuses:string[]=[]
@@ -50,8 +52,8 @@ export class Tab1Page {
   seatTypes:string[]=[]
 
 
-  hours :string []= [];
-  hoursFiltered:string[]=[]
+  hours = new Set<string>
+  hoursFiltered = new Set<string>
   seats : Seat[]=[]
   availableSeats : number[]=[]
   methods = ['Transferencia','Depósito','Paypal']
@@ -67,7 +69,7 @@ export class Tab1Page {
   ];
   weekDays: string[] = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
   isCalendarOpen: boolean = false;
-
+  busFreq:string = ""
 
   daysInMonthWithPlaceholders: (number | null)[] = [];
 
@@ -85,28 +87,55 @@ export class Tab1Page {
   frecuencyID: string =""
   tripId:string =""
 
+  selectedBusId = ""
+
   ngOnInit(){
     this.obtainCooperatives()
     this.updateCalendar();
-
 }
+
+
 
   currentList: number = 1;
 
+  isInitialFormValid():boolean{
+    return (
+      this.selectedCooperative !=="" &&
+      this.selectedOrigin !== "" &&
+      this.selectedDestination !== "" &&
+      this.selectedHour !== "" &&
+      this.selectedDate !== null
+    )
+  }
+
+  isDetailsFormValid():boolean{
+    return (
+      this.selectedSeat.length> 0 &&
+      this.seatCost !== 0 &&
+      this.selectedMethod !== "" &&
+      this.busNumber !== 0
+    )
+  }
+
 
   goNext() {
-      for(let i =0; i < this.frecuencies.length; i++){
-        if(this.frecuencies[i].hour_start == this.selectedHour){
-          for(let j=0; j< this.routes.length; j++){
-            if(this.routes[j].route_start==this.selectedOrigin &&(this.routes[j].route_end==this.selectedDestination ||  this.routes[j].route_stops.includes(this.selectedDestination))){
-              if(this.routes[j].route_id==this.frecuencies[i].id_route){
-                this.obtainBuses()
-                this.obtainSeats(this.frecuencies[i].id_freq)
-              }
-            }
-          }
+    if (this.isInitialFormValid()) {
+      const selectedFrequency = this.frecuencies.find(freq => freq.hour_start === this.selectedHour);
+
+      if (selectedFrequency) {
+        const selectedRoute = this.routes.find(route =>
+          route.route_start === this.selectedOrigin &&
+          (route.route_end === this.selectedDestination || route.route_stops.includes(this.selectedDestination)) &&
+          route.route_id === selectedFrequency.id_route
+        );
+
+        if (selectedRoute) {
+          console.log(this, this.selectedCooperativeId);
+          this.obtainBuses();
+          this.obtainSeats(selectedFrequency.id_freq);
         }
       }
+    }
     this.currentList = 2;
   }
 
@@ -115,16 +144,23 @@ export class Tab1Page {
     this.currentList = 1;
   }
   goPayOrder(){
+    if(this.isDetailsFormValid()){
     this.currentList = 3;
     this.authSrv.getCurrentUserDisplayName().subscribe(displayName => {
       this.userName =  displayName?.toString().split('@')[0] || 'Invitado';
     });
     this.establishPayments()
+
     }
 
+  }
+
+  goBack2(){
+    this.currentList=2
+  }
 
 
-  constructor() {
+  constructor(private modalController:ModalController, private toastController: ToastController) {
   }
 
   openCalendar(){
@@ -143,6 +179,21 @@ export class Tab1Page {
     this.selectedDate=event.detail.value
     this.closeCalendar()
   }
+
+  onCooperativeChange(event: any){
+      const selectedName = event.detail.value;
+      const selectedCooperative = this.cooperatives.find(coop => coop.name === selectedName);
+
+      if (selectedCooperative) {
+        this.selectedCooperativeId = selectedCooperative.id;
+        console.log("Cooperativa seleccionada:", selectedName, "ID:", this.selectedCooperativeId);
+      } else {
+        console.error("No se encontró la cooperativa seleccionada.");
+        this.selectedCooperativeId = "";
+      }
+
+  }
+
   async obtainCooperatives(){
     this.firebaseSvc.getAllDocuments('cooperatives').subscribe(documents => {
       this.cooperatives = documents;
@@ -205,82 +256,95 @@ export class Tab1Page {
     this.obtainRoutes()
   }
 
-  async obtainRoutes(){
-    this.routes = []
-    this.origins=[]
-    this.destinations=[]
-    if(!this.selectedCooperative || this.selectedCooperative.trim() === ''){
-    for(let i=0; i<this.cooperatives.length;i++){
-      this.firebaseSvc.getSubcolection('cooperatives',this.cooperatives[i].id,'Rutas')
-      .subscribe(rutas =>{
-        rutas.forEach(ruta=>{
-           const rutaRoute:Route ={
-            route_start:ruta.route_start || '',
-            route_end:ruta.route_end || '',
-            route_stops:ruta.route_stops||[],
-            route_id:ruta.id
-          };
-          for (let i=0;i<this.frecuencies.length;i++) {
-            if(rutaRoute.route_id===this.frecuencies[i].id_route){
-              console.log("entre")
-              this.routes.push(rutaRoute)
-              this.obtainOrigins()
-              this.obtainDestinations()
-              this.obtainHours()
-              this.origins.push(rutaRoute.route_start)
-              this.originsFiltered.push(rutaRoute.route_start)
-              this.destinations.push(rutaRoute.route_end);
-              this.destinationsFiltered.push(rutaRoute.route_end);
-              this.hours.push(this.frecuencies[i].hour_start)
-              this.hoursFiltered.push(this.frecuencies[i].hour_start)
-            }
-          }
+  async obtainRoutes() {
+    this.routes = [];
+    this.origins.clear();
+    this.destinations.clear();
 
-      });
-    });
-  }
-  }
-  else {
-    for(let i=0; i < this.cooperatives.length;i++){
-        if(this.selectedCooperative===this.cooperatives[i].name){
-          this.selectedCooperativeId = this.cooperatives[i].id
-        }
+    const subscriptionPromises: Promise<void>[] = [];
+
+    if (!this.selectedCooperative || this.selectedCooperative.trim() === '') {
+      for (let i = 0; i < this.cooperatives.length; i++) {
+        const cooperativeId = this.cooperatives[i].id;
+        const promise = new Promise<void>((resolve) => {
+          this.firebaseSvc.getSubcolection('cooperatives', cooperativeId, 'Rutas')
+            .subscribe(rutas => {
+              rutas.forEach(ruta => {
+                const rutaRoute: Route = {
+                  route_start: ruta.route_start || '',
+                  route_end: ruta.route_end || '',
+                  route_stops: ruta.route_stops || [],
+                  route_id: ruta.id
+                };
+
+                for (let j = 0; j < this.frecuencies.length; j++) {
+                  if (rutaRoute.route_id === this.frecuencies[j].id_route) {
+                    this.routes.push(rutaRoute);
+                    this.origins.add(rutaRoute.route_start);
+                    this.originsFiltered.add(rutaRoute.route_start);
+                    this.destinations.add(rutaRoute.route_end);
+                    this.destinationsFiltered.add(rutaRoute.route_end);
+                    this.hours.add(this.frecuencies[j].hour_start);
+                    this.hoursFiltered.add(this.frecuencies[j].hour_start);
+                  }
+                }
+              });
+              resolve();
+            });
+        });
+        subscriptionPromises.push(promise);
+      }
+    } else {
+      const cooperative = this.cooperatives.find(coop => coop.name === this.selectedCooperative);
+      if (cooperative) {
+        const cooperativeId = cooperative.id;
+        const promise = new Promise<void>((resolve) => {
+          this.firebaseSvc.getSubcolection('cooperatives', cooperativeId, 'Rutas')
+            .subscribe(rutas => {
+              rutas.forEach(ruta => {
+                const rutaRoute: Route = {
+                  route_start: ruta.route_start || '',
+                  route_end: ruta.route_end || '',
+                  route_stops: ruta.route_stops || [],
+                  route_id: ruta.id
+                };
+
+                for (let j = 0; j < this.frecuencies.length; j++) {
+                  if (rutaRoute.route_id === this.frecuencies[j].id_route) {
+                    this.routes.push(rutaRoute);
+                    this.origins.add(rutaRoute.route_start);
+                    this.originsFiltered.add(rutaRoute.route_start);
+                    this.destinations.add(rutaRoute.route_end);
+                    this.destinationsFiltered.add(rutaRoute.route_end);
+                    this.hours.add(this.frecuencies[j].hour_start);
+                    this.hoursFiltered.add(this.frecuencies[j].hour_start);
+                  }
+                }
+              });
+              resolve();
+            });
+        });
+        subscriptionPromises.push(promise);
+      }
     }
-    this.firebaseSvc
-      .getSubcolection('cooperatives', this.selectedCooperativeId, 'Rutas')
-      .subscribe(rutas => {
-        rutas.forEach(ruta => {
-          const rutaRoute: Route = {
-            route_start: ruta.route_start || '',
-            route_end: ruta.route_end || '',
-            route_stops: ruta.route_stops || [],
-            route_id:ruta.id
-          };
-          for (let i=0;i<this.frecuencies.length;i++) {
-            if(rutaRoute.route_id===this.frecuencies[i].id_route){
-              console.log("entre2")
-              this.routes.push(rutaRoute)
-              this.obtainOrigins()
-              this.obtainDestinations()
-              this.obtainHours()
-              this.origins.push(rutaRoute.route_start)
-              this.destinations.push(rutaRoute.route_end);
-              this.hours.push(this.frecuencies[i].hour_start)
-              this.hoursFiltered.push(this.frecuencies[i].hour_start)
-            }
-          }
-      });
-      });
+
+    await Promise.all(subscriptionPromises);
+
+    if (this.routes.length === 0) {
+      console.log("No se encontraron rutas");
+      this.originsFiltered.clear();
+      this.destinationsFiltered.clear();
+      this.hoursFiltered.clear();
+    }
   }
-  console.log(this.routes)
-}
+
               obtainOrigins(){
                 if(this.selectedDestination !==""){
-                  this.originsFiltered = []
+                  this.originsFiltered.clear()
                   console.log("Obtengo origen 1")
                   for(let i=0 ; i <this.routes.length;i++){
                     if(this.selectedDestination==this.routes[i].route_end){
-                      this.originsFiltered.push(this.routes[i].route_start)
+                      this.originsFiltered.add(this.routes[i].route_start)
                     }
                   }
                 }
@@ -290,10 +354,10 @@ export class Tab1Page {
 
               obtainDestinations(){
                 if(this.selectedOrigin!==""){
-                  this.destinationsFiltered = []
+                  this.destinationsFiltered.clear()
                   for(let i=0 ; i <this.routes.length;i++){
                     if(this.selectedOrigin==this.routes[i].route_start){
-                      this.destinationsFiltered.push(this.routes[i].route_end)
+                      this.destinationsFiltered.add(this.routes[i].route_end)
                     }
                   }
                 }
@@ -303,7 +367,7 @@ export class Tab1Page {
 
               obtainHours(){
                   if(this.selectedOrigin!=="" && this.selectedDestination!==""){
-                      this.hoursFiltered =[]
+                      this.hoursFiltered.clear()
                       for(let i=0; i<this.routes.length;i++){
                           if(this.selectedOrigin==this.routes[i].route_start&&this.selectedDestination==this.routes[i].route_end){
                             for(let j=0; j< this.frecuencies.length ; j++){
@@ -311,7 +375,7 @@ export class Tab1Page {
                               console.log(this.frecuencies[j].id_route)
 
                               if(this.routes[i].route_id==this.frecuencies[j].id_route){
-                                this.hoursFiltered.push(this.frecuencies[j].hour_start)
+                                this.hoursFiltered.add(this.frecuencies[j].hour_start)
                               }
                             }
 
@@ -453,65 +517,8 @@ loadEnableDays(){
     }
 }
 
-obtainSeats(cooperative: string | null) {
-  if (!cooperative) return;
-
-  this.busIds = [];
-  this.trips = [];
-  this.seats = [];
-
-  this.firebaseSvc.getSubcolection('cooperatives', this.selectedCooperativeId, 'buses')
-    .subscribe(buses => {
-      buses.forEach(bus => {
-        this.busIds.push(bus.id);
-      });
-      console.log('IDs de buses:', this.busIds);
-
-      this.busIds.forEach(busId => {
-        // Obtener los viajes del bus
-        this.firebaseSvc.getSubcollectionFromPath(
-          'cooperatives',
-          this.selectedCooperativeId,
-          'buses',
-          busId,
-          'viajes'
-        ).subscribe(viajes => {
-          viajes.forEach(viaje => {
-            if (viaje.freq_id === cooperative) {
-              this.trips.push({ ...viaje, busId });
-              this.frecuencyID = viaje.freq_id
-              this.tripId=viaje.id
-              const matchingBus = buses.find(bus => bus.id === busId);
-              console.log(buses)
-
-              console.log(matchingBus)
-              if (matchingBus) {
-                this.busNumber = matchingBus.bus_number;
-                console.log(this.busNumber)
-              }
 
 
-              this.firebaseSvc.getSubcollectionFromPath(
-                'cooperatives',
-                this.selectedCooperativeId,
-                'buses',
-                busId,
-                'asientos'
-              ).subscribe(asientos => {
-                asientos.forEach(asiento => {
-                  this.seats.push({ ...asiento, busId });
-                  this.seatTypes.push(asiento.category)
-                });
-                console.log('Asientos disponibles:', this.seats);
-
-              });
-            }
-          });
-
-        });
-      });
-    });
-}
 
   obtainBuses(){
     this.firebaseSvc.getSubcolection(
@@ -525,68 +532,219 @@ obtainSeats(cooperative: string | null) {
       })
     })
   }
+
   obtainCost(){
+    this.seatCost= 0
     console.log(this.seats)
-    if(this.selectedSeat!=""){
-      if(this.selectedSeat==this.seats[0].category){
-          this.seatCost = this.trips[0].seat_normal_cost
-      }else{
-        this.seatCost=this.trips[0].seat_vip_cost
-      }
+    for(let  i= 0; i< this.selectedSeat.length;i++){
+        if(this.selectedSeat[i].category == "Normal"){
+            this.seatCost += this.trips[0].seat_normal_cost
+        }else{
+          this.seatCost +=this.trips[0].seat_vip_cost
+        }
     }
+  }
+  async showToastCost() {
+    const toast = await this.toastController.create({
+      message: `Costo VIP: $${this.trips[0].seat_vip_cost} \nCosto Normal: $${this.trips[0].seat_normal_cost}`,
+      duration: 4000,  // Duración del toast (en milisegundos)
+      position: 'bottom',  // Posición del Toast (bottom, middle, top)
+      color: 'dark',  // Color del toast
+    });
+    toast.present();  // Mostrar el Toast
   }
 
   obtainSeatsNumber() {
-    if (this.selectedSeat !== "") {
-      if (this.selectedSeat === this.seats[0].category) {
-        console.log("Normal")
-        this.availableSeats = [];
-        for (let i = this.seats[0].number; i >= 1; i--) {
-          this.availableSeats.push(i);
-        }
-      } else if (this.selectedSeat === this.seats[1].category) {
-        console.log("VIP")
-        this.availableSeats = [];
-        for (let i = this.seats[1].number; i >= 1; i--) {
-          this.availableSeats.push(i);
-        }
-      } else {
-        this.availableSeats = [];
-      }
-    } else {
-      this.availableSeats = [];
-    }
+    // if (this.selectedSeat !== "") {
+    //   if (this.selectedSeat === this.seats[0].category) {
+    //     console.log("Normal")
+    //     this.availableSeats = [];
+    //     for (let i = this.seats[0].number; i >= 1; i--) {
+    //       this.availableSeats.push(i);
+    //     }
+    //   } else if (this.selectedSeat === this.seats[1].category) {
+    //     console.log("VIP")
+    //     this.availableSeats = [];
+    //     for (let i = this.seats[1].number; i >= 1; i--) {
+    //       this.availableSeats.push(i);
+    //     }
+    //   } else {
+    //     this.availableSeats = [];
+    //   }
+    // } else {
+    //   this.availableSeats = [];
+    // }
   }
 
 
   establishPayments(){
-    this.subtotal = this.seatCost * parseInt(this.selectedSeatsNumber,10)
+    this.subtotal = this.seatCost
     this.iva = this.subtotal * 15 / 100
     this.total = this.subtotal+this.iva
   }
 
   async saveTicket() {
-    const ticketData = {
-      tripId:this.tripId,
-      userId: this.userName,
-      frecuencyId: this.frecuencyID,
-      date: this.selectedDate,
-      seatType: this.selectedSeat,
-      numberOfSeats: this.selectedSeatsNumber,
-      total: this.total,
-      paymentMethod: this.selectedMethod,
-      busNumber: this.busNumber,
-    };
-
     try {
-      await this.firebaseSvc.addSubcollectionDocument('cooperatives', this.selectedCooperativeId, 'boletos', ticketData);
-      alert('Boleto guardado con éxito');
-      this.currentList=1
+      for (let i = 0; i < this.selectedSeat.length; i++) {
+        const ticketData = {
+          tripId: this.tripId,
+          userId: this.userName,
+          frecuencyId: this.frecuencyID,
+          date: this.selectedDate,
+          seatType: this.selectedSeat[i].category,
+          seatNumber: `Asiento-${this.selectedSeat[i].number}`,
+          total: this.total / this.selectedSeat.length,
+          paymentMethod: this.selectedMethod,
+          busNumber: this.busNumber,
+          estado: this.selectedSeat[i].status,
+        };
+
+        await this.firebaseSvc.addSubcollectionDocument(
+          'cooperatives',
+          this.selectedCooperativeId,
+          'boletos',
+          ticketData
+        );
+      }
+
+
+        for(let j=0;j<this.selectedSeat.length; j++){
+            await this.firebaseSvc.updateSeatStatus(
+              'cooperatives',
+              this.selectedCooperativeId,
+              'buses',
+              this.selectedBusId,
+              'asientos',
+              this.selectedSeat[j].id,
+              'reservado'
+            );
+
+            console.log(`Asiento ${this.selectedSeat[j].id} actualizado a 'reservado'`);
+      }
+
+
+
+      alert('Boletos guardados con éxito');
+
+      this.resetForm();
     } catch (error) {
-      console.error('Error al guardar boleto:', error);
+      console.error('Error al guardar boletos:', error);
     }
   }
 
+
+
+  resetForm() {
+    this.currentList = 1;
+    this.selectedDate = null;
+    this.selectedCooperative = '';
+    this.selectedOrigin = '';
+    this.selectedDestination = '';
+    this.selectedHour = '';
+    this.selectedSeat = [];
+    this.selectedSeatsNumber = '';
+    this.selectedMethod = '';
+    this.seatCost = 0;
+    this.busNumber = 0;
+  }
+
+
+
+
+
+  //Asientos nueva funcionalidad
+  async openSelection(){
+    const seatsSorted  = this.seats.sort((a, b) => a.number - b.number);
+
+    console.log(this.seats)
+    const modal = await this.modalController.create({
+      component:SeatSelectorPage,
+       componentProps: {
+       seats: seatsSorted
+    },
+    })
+    modal.onDidDismiss().then((data) => {
+      if (data.data && data.data.selectedSeats) {
+        this.selectedSeat = data.data.selectedSeats;
+        console.log('Asientos seleccionados:', this.selectedSeat);
+        this.obtainCost()
+      }
+    });
+  await modal.present()
+  }
+
+
+  obtainSeats(cooperative: string | null) {
+    console.log(this.selectedCooperativeId);
+
+    if (!cooperative) return;
+
+    // Limpiar los arrays antes de añadir nuevos datos
+    this.seats = [];
+    this.selectedSeat = [];
+    this.busIds = [];
+    this.trips = [];
+
+    this.firebaseSvc.getSubcolection('cooperatives', this.selectedCooperativeId, 'buses')
+      .subscribe(buses => {
+        buses.forEach(bus => {
+          this.busIds.push(bus.id);
+        });
+        console.log('IDs de buses:', this.busIds);
+
+        this.busIds.forEach(busId => {
+          // Obtener los viajes del bus
+          this.firebaseSvc.getSubcollectionFromPath(
+            'cooperatives',
+            this.selectedCooperativeId,
+            'buses',
+            busId,
+            'viajes'
+          ).subscribe(viajes => {
+            viajes.forEach(viaje => {
+              if (viaje.freq_id === cooperative) {
+                this.trips.push({ ...viaje, busId });
+                this.frecuencyID = viaje.freq_id;
+                this.tripId = viaje.id;
+                const matchingBus = buses.find(bus => bus.id === busId);
+                console.log(buses);
+                console.log(matchingBus);
+                this.selectedBusId = matchingBus.id
+
+                if (matchingBus) {
+                  this.busNumber = matchingBus.number;
+                  console.log("numero bus" + this.busNumber);
+                }
+
+                // Obtener los asientos del bus
+                this.firebaseSvc.getSubcollectionFromPath(
+                  'cooperatives',
+                  this.selectedCooperativeId,
+                  'buses',
+                  busId,
+                  'asientos'
+                ).subscribe(asientos => {
+                  asientos.forEach(asiento => {
+                    // Verificar si el asiento ya existe para evitar duplicados
+                    const seatExists = this.seats.some(existingSeat => existingSeat.number === asiento.number);
+
+                    if (!seatExists) {
+                      this.seats.push({
+                        id: asiento.id,
+                        number: asiento.number,
+                        category: asiento.category,
+                        status: asiento.status,
+                      });
+                    }
+                  });
+                  console.log('Asientos disponibles:', this.seats);
+                });
+              }
+            });
+          });
+        });
+      });
+  }
+
+
 }
-
-

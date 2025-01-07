@@ -15,6 +15,7 @@ import { SeatSelectorPage } from './seat-selector.page';
     IonicModule,
     SeatSelectorPageRoutingModule
   ],
-  declarations: [SeatSelectorPage]
+  declarations: [SeatSelectorPage],
+  exports:[SeatSelectorPage]
 })
 export class SeatSelectorPageModule {}
