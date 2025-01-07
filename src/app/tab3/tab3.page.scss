@@ -1,0 +1,21 @@
+ion-content{
+  --background: var(--ion-color-primary);
+}
+ion-toolbar{
+  --background: var(--ion-color-secondary);
+}
+ion-title{
+  --color: var(--ion-color-secondary-contrast);
+}
+ion-content {
+  #map {
+      height: 100%;
+      width: 100%;
+      opacity: 0;
+      transition: opacity 150ms ease-in;
+      display: block;
+      &.show-map{
+          opacity: 1;
+      }
+  }
+}
