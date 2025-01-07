@@ -10,4 +10,24 @@
       <ion-title size="large">Mi Cuenta</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <div class="content-container">
+    <img src="../../assets/icon/logout.png" alt="" srcset="">
+
+    <div class="account-details">
+      <h2>{{ userName }}</h2>
+      <p>{{ userEmail }}</p>
+
+      <ion-button expand="block" color="danger" (click)="logout()">
+        Cerrar Sesión
+      </ion-button>
+    </div>
+
+    <div class="report-issue">
+      <p>¿Tienes problemas? Puedes reportar fallas en el sistema aquí:</p>
+      <ion-button expand="block" color="tertiary" (click)="openForm()">
+        Reportar Fallas
+      </ion-button>
+    </div>
+  </div>
 </ion-content>

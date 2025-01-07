@@ -14,7 +14,7 @@ ion-content {
   align-items: center;
   gap: 20px;
   width: 100%;
-  margin-top: 10px; /* Agrega espacio superior */
+  margin-top: 10px;
 }
 
 .logo-container img {
@@ -47,78 +47,92 @@ ion-content {
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  padding: 0 10px;
 }
 
-.center{
-  width: 70%;
+.center {
+  width: 80%;
   justify-content: center;
   text-align: center;
   display: flex;
 }
 
-
 /* Estilo para el campo de entrada */
 .input-field {
   width: 100%;
-  max-width: 400px; /* Limita el ancho máximo para campos largos */
-  border: none; /* Sin bordes */
-  background: #EEEEEE; /* Color de fondo */
+  max-width: 500px;
+  border: none;
+  background: #EEEEEE;
   color: #4B5057;
-  padding: 10px 20px; /* Espaciado interno para más estilo */
-  border-radius: 30px; /* Hace que los bordes sean redondeados */
-  font-size: 1.2rem;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-size: 1.1rem;
   text-align: center;
-  box-sizing: border-box; /* Asegura que padding no afecte el tamaño total */
+  box-sizing: border-box;
+  height: 45px;
+  margin: 5px 0;
+}
+
+/* Estilos específicos para ion-input */
+ion-input {
+  --padding-start: 25px;
+  --padding-end: 25px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
 }
 
 /* Asegúrate de que las etiquetas no estén pegadas a los inputs */
 .form-group label {
-  margin-bottom: 10px; /* Aumenta el espacio debajo de las etiquetas */
+  margin-bottom: 10px;
   font-weight: 500;
   color: #4B5057;
 }
 
-
 /* Estilo para el botón de iniciar sesión */
 ion-button {
-  width: 70%; /* Asegura que el botón no ocupe toda la pantalla, solo el tamaño del contenedor */
-  border-radius: 500px; /* Bordes redondeados para el botón */
-  --background: #606060; /* Color del fondo del botón */
-  padding: 12px 0; /* Ajuste de altura del botón */
-  color: #f6ba67; /* Establece el color del texto como blanco */
+  width: 70%;
+  border-radius: 500px;
+  --background: #606060;
+  padding: 12px 0;
+  color: #f6ba67;
 }
 
-.centrado-button{
+.centrado-button {
   text-align: center;
   justify-content: center;
-  
 }
 
 ion-button::part(native) {
-  border-radius: 80px !important; /* Bordes aún más redondeados */
+  border-radius: 80px !important;
 }
 
 .forgot-password {
   margin-top: -5px;
   font-size: 0.9rem;
-  color: #4B5057;
+  color: #1141a8; /* Cambiado a color azul */
   text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
 .forgot-password:hover {
   text-decoration: underline;
+  color: #1d4ed8; /* Azul más oscuro al hover */
 }
 
-.register{
+.register {
   margin-top: -10px;
   font-size: 0.9rem;
-  color: #4B5057;
+  color: #1d4ed8; /* Cambiado a color azul */
   text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
 .register:hover {
   text-decoration: underline;
+  color: #1d4ed8; /* Azul más oscuro al hover */
 }
 
 /* Divider */
@@ -151,41 +165,40 @@ ion-button::part(native) {
   --background: #ea4335;
   color: #ffffff;
   font-weight: bold;
-  font-size: 0.9rem; /* Reduce el tamaño del texto */
-  width: 70%; /* Reduce el ancho del botón */
-  height: 40px; /* Ajusta la altura del botón */
-  border-radius: 20px; /* Bordes redondeados */
+  font-size: 0.9rem;
+  width: 70%;
+  height: 40px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0; /* Elimina relleno extra */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .google-login ion-icon {
-  font-size: 1rem; /* Ajusta el tamaño del icono */
-  margin-right: 8px; /* Espacio entre el icono y el texto */
-  color: #ffffff; /* Color del icono */
+  font-size: 1rem;
+  margin-right: 8px;
+  color: #ffffff;
 }
 
 .facebook-login {
-  --background: #3b5998; /* Color azul característico de Facebook */
-  color: #ffffff; /* Texto blanco */
+  --background: #3b5998;
+  color: #ffffff;
   font-weight: bold;
-  font-size: 0.9rem; /* Tamaño del texto */
-  width: 70%; /* Ancho del botón */
-  height: 40px; /* Altura del botón */
-  border-radius: 20px; /* Bordes redondeados */
+  font-size: 0.9rem;
+  width: 70%;
+  height: 40px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0; /* Sin relleno extra */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .facebook-login ion-icon {
-  font-size: 1rem; /* Tamaño del icono */
-  margin-right: 8px; /* Espacio entre el icono y el texto */
-  color: #ffffff; /* Color del icono */
+  font-size: 1rem;
+  margin-right: 8px;
+  color: #ffffff;
 }
-

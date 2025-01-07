@@ -1,9 +1,79 @@
-ion-content{
+ion-content {
   --background: var(--ion-color-primary);
+  text-align: center;
+  height: 100%;
 }
-ion-toolbar{
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  padding-top: 64px; // Añade espacio significativo después del header
+  height: 100%;
+}
+
+ion-toolbar {
   --background: var(--ion-color-secondary);
 }
-ion-title{
+
+ion-title {
   --color: var(--ion-color-secondary-contrast);
+}
+
+.account-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  margin-top: 32px;
+}
+
+.account-details h2 {
+  font-size: 1.6rem;
+  color: var(--ion-color-light);
+  margin: 0;
+}
+
+.account-details p {
+  font-size: 1.1rem;
+  color: var(--ion-color-light-tint);
+  margin: 0;
+}
+
+ion-button {
+  width: auto;
+  padding: 12px 20px;
+  font-size: 1rem;
+  margin-top: 16px;
+  border-radius: 12px;
+}
+
+.report-issue {
+  margin-top: 32px;
+  text-align: center;
+
+  p {
+    font-size: 1rem;
+    color: var(--ion-color-light-tint);
+    margin-bottom: 12px;
+  }
+
+  ion-button {
+    width: auto;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+}
+
+img {
+  width: 150px;
+  height: auto;
+  border-radius: 50%;
+}
+
+ion-button::part(native) {
+  border-radius: 80px !important;
 }
