@@ -166,11 +166,11 @@ La base de datos Firebase está organizada en las siguientes colecciones:
 ## Créditos ✒️
 
 ## Equipo de desarrollo bytebuddies:
--Stalin Danilo Badillo Silva.
--Medina Vasco Gabriel Leonardo.
--Izurieta Freire Daniel Kevin.
--Ramírez Rojas  Andrés Said.
--Villafuerte Grijalva Mauricio Fernando.
+- Stalin Danilo Badillo Silva.
+- Medina Vasco Gabriel Leonardo.
+- Izurieta Freire Daniel Kevin.
+- Ramírez Rojas  Andrés Said.
+- Villafuerte Grijalva Mauricio Fernando.
 
 ---
 
