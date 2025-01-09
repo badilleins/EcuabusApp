@@ -1,8 +1,10 @@
+import { Stopp } from "./stopp";
+
 export interface Frecuency{
   timeStart: string,
   timeEnd: string,
   time: string,
-  stops:Object[],
+  stops:Stopp[],
   id:string,
   origin:string,
   destiny:string,

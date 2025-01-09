@@ -371,8 +371,12 @@ async loadFrecuenciesAndTrips() {
                 if(this.selectedDestination !==""){
                   this.originsFiltered.clear()
                   for(let i=0 ; i <this.frecuencies.length;i++){
-                    if(this.selectedDestination==this.frecuencies[i].destiny){
-                      this.originsFiltered.add(this.frecuencies[i].origin)
+                    if(this.frecuencies[i].stops.length>0){
+                      for(let j=0; j<this.frecuencies[i].stops.length;j++){
+                        if(this.selectedDestination==this.frecuencies[i].destiny|| this.selectedDestination==this.frecuencies[i].stops[j].name){
+                          this.originsFiltered.add(this.frecuencies[i].origin)
+                        }
+                      }
                     }
                   }
                 }
@@ -385,7 +389,14 @@ async loadFrecuenciesAndTrips() {
                   for(let i=0 ; i <this.frecuencies.length;i++){
                     if(this.selectedOrigin==this.frecuencies[i].origin){
                       this.destinationsFiltered.add(this.frecuencies[i].destiny)
+                      if(this.frecuencies[i].stops.length>0){
+                        for(let j=0; j<this.frecuencies[i].stops.length;j++){
+                          this.destinationsFiltered.add(this.frecuencies[i].stops[j].name)
+                        }
+
+                      }
                     }
+
                   }
                 }
                 this.populateDates()
@@ -395,6 +406,18 @@ async loadFrecuenciesAndTrips() {
                   if(this.selectedOrigin!=="" && this.selectedDestination!==""){
                       this.hoursFiltered.clear()
                       for(let i=0; i<this.frecuencies.length;i++){
+                        if(this.frecuencies[i].stops.length>0){
+                          for(let p =0; p<this.frecuencies[i].stops.length; p++){
+                          if(this.frecuencies[i].stops[p].name==this.selectedDestination&&this.selectedOrigin==this.frecuencies[i].origin){
+                                for(let j=0; j< this.trips.length ; j++){
+                                if(this.trips[j].idfrec==this.frecuencies[i].id){
+                                  this.hoursFiltered.add(this.frecuencies[i].timeStart)
+                                }
+                              }
+                          }
+                        }
+                      }
+                        else{
                           if(this.selectedOrigin==this.frecuencies[i].origin&&this.selectedDestination==this.frecuencies[i].destiny){
                             for(let j=0; j< this.trips.length ; j++){
                               if(this.trips[j].idfrec==this.frecuencies[i].id){
@@ -403,10 +426,11 @@ async loadFrecuenciesAndTrips() {
                             }
 
                           }
+                        }
                       }
-                  }
                   this.populateDates()
                 }
+              }
 
               enableOrigins(){
                   for(let i=0; i<this.routes.length;i++){
@@ -498,6 +522,7 @@ isCurrentMonth(day: number | null): boolean {
 populateDates(): void {
   this.dates = [];
   for (let i = 0; i < this.frecuencies.length; i++) {
+    if(this.frecuencies[i].stops.length<=0){
     if (
       this.selectedOrigin === this.frecuencies[i].origin &&
       this.selectedDestination === this.frecuencies[i].destiny &&
@@ -510,12 +535,27 @@ populateDates(): void {
         }
       }
     }
+  }else{
+    for(let q=0; q < this.frecuencies[i].stops.length;q++){
+      if (
+        this.selectedOrigin === this.frecuencies[i].origin &&
+        this.selectedDestination === this.frecuencies[i].stops[q].name &&
+        this.selectedHour === this.frecuencies[i].timeStart
+      ) {
+        for (let j = 0; j < this.trips.length; j++) {
+          if (this.frecuencies[i].id === this.trips[j].idfrec) {
+            const formattedDate = new Date(this.trips[j].date).toISOString().split('T')[0];
+            this.dates.push(formattedDate);
+          }
+        }
+    }
   }
+}
+}
 }
 
 
 async obtainBuses() {
-  console.log("Hola dfe");
   console.log(this.trips);
 
   for (let j = 0; j < this.frecuencies.length; j++) {
@@ -568,36 +608,71 @@ async obtainBuses() {
 }
 
   obtainCost(){
-    this.seatCost= 0
     console.log(this.seats)
 
-    for(let  i= 0; i< this.selectedSeat.length;i++){
-      if(this.selectedSeat[i].category == "Normal"){
-        for(let j=0;j<this.trips.length;j++){
-          if(this.trips[j].id===this.selectedTripId){
-            this.seatCost+=parseInt(this.trips[j].price)
-            this.normalPrice = parseInt(this.trips[j].price)
+
+    for(let i=0; i<this.frecuencies.length;i++){
+      for(let k=0; k< this.trips.length;k++){
+      if(this.frecuencies[i].id===this.trips[k].idfrec){
+
+        if(this.frecuencies[i].stops.length<0){
+        for(let  l= 0; l< this.selectedSeat.length;l++){
+          if(this.selectedSeat[l].category == "Normal"){
+            for(let j=0;j<this.trips.length;j++){
+              if(this.trips[j].id===this.selectedTripId){
+              this.seatCost += parseInt(this.trips[j].price)
+              this.normalPrice = parseInt(this.trips[j].price)
+            }
           }
+        }else{
+          for(let j=0;j<this.trips.length;j++){
+            if(this.trips[j].id===this.selectedTripId){
+              this.seatCost+=parseInt(this.trips[j].priceVip)
+              this.vipPrice =parseInt(this.trips[j].priceVip)
+            }
+          }      }
         }
       }else{
+          for(let l=0; this.frecuencies[i].stops.length;l++){
+            if(this.frecuencies[i].stops[l].name= this.selectedDestination){
+              for(let  m= 0; m< this.selectedSeat.length;m++){
+                if(this.selectedSeat[m].category == "Normal"){
+                  this.seatCost+=parseInt(this.frecuencies[i].stops[l].price)
+                }else{
+                  this.seatCost+=parseInt(this.frecuencies[i].stops[l].priceVip)
+                }
+            }
+          }
+
+      }
+
+        }
+      }
+
+    }
+  }
+}
+
+  async showToastCost() {
+
+    for(let i=0; i<this.frecuencies.length;i++){
+      if(this.frecuencies[i].stops.length<=0){
         for(let j=0;j<this.trips.length;j++){
           if(this.trips[j].id===this.selectedTripId){
             this.seatCost+=parseInt(this.trips[j].priceVip)
             this.vipPrice =parseInt(this.trips[j].priceVip)
           }
-        }      }
-  }
-  }
-
-  async showToastCost() {
-
-
-        for(let j=0;j<this.trips.length;j++){
-          if(this.trips[j].id===this.selectedTripId){
-           this.vipPrice = parseInt(this.trips[j].priceVip)
-           this.normalPrice = parseInt(this.trips[j].price)
+        }
+      }else
+      {
+        for(let l=0; l<this.frecuencies[i].stops.length;l++){
+          if(this.frecuencies[i].stops[l].name = this.selectedDestination){
+            this.normalPrice = parseInt(this.frecuencies[i].stops[l].price)
+            this.vipPrice = parseInt(this.frecuencies[i].stops[l].priceVip)
           }
         }
+      }
+      }
 
 
     const toast = await this.toastController.create({
