@@ -1,0 +1,71 @@
+<ion-content [fullscreen]="true">
+  <div class="center-container">
+    <!-- Logo -->
+    <div class="logo-container">
+      <img src="../../assets/icon/EcuaBus.png" alt="Logo EcuaBus" />
+    </div>
+
+    <!-- Título y Eslogan -->
+    <div class="title-container">
+      <h1>EcuaBus</h1>
+      <p>Compra tu pasaje, disfruta tu viaje</p>
+    </div>
+
+    <div class="center">
+      <!-- Formulario de inicio de sesión -->
+      <form [formGroup]="group">
+        <!-- Usuario -->
+        <div class="form-group">
+          <label for="useremail">Correo Electronico</label>
+
+          <ion-input id="useremail" type="email" placeholder="Ingresa tu Correo" class="input-field"
+            formControlName="email">
+          </ion-input>
+
+
+        </div>
+
+        <!-- Contraseña -->
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+
+          <ion-input id="password" type="password" placeholder="Ingresa tu Contraseña" class="input-field"
+            formControlName="password">
+          </ion-input>
+        </div>
+
+        <div class="centrado-button">
+          <!-- Botón de Iniciar Sesión -->
+          <ion-button (click)="logIn()">Iniciar Sesión</ion-button>
+        </div>
+
+      </form>
+
+    </div>
+
+    <!-- Opción de Registro -->
+    <a routerLink="/register" class="register">Registrate</a>
+
+    <!-- Opción de Olvidaste tu contraseña -->
+    <a routerLink="/recover-password" class="forgot-password">¿Olvidaste tu contraseña?</a>
+
+    <!-- Divider -->
+    <div class="divider">
+      <span>O</span>
+    </div>
+
+    <!-- Botón de Registro con Google -->
+    <ion-button expand="block" class="google-login" (click)="logInWithGoogle()">
+      <ion-icon slot="start" name="logo-google"></ion-icon>
+      Continuar con Google
+    </ion-button>
+
+    <!-- Botón de Registro con Facebook 
+    <ion-button expand="block" class="facebook-login" (click)="logInWithFacebook()">
+      <ion-icon slot="start" name="logo-facebook"></ion-icon>
+      Continuar con Facebook
+    </ion-button>
+    -->
+
+  </div>
+</ion-content>

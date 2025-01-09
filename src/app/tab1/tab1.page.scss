@@ -1,0 +1,241 @@
+.home_content{
+  --background: var(--ion-color-primary);
+  text-align: center;
+  overflow: show;
+}
+ion-toolbar{
+  --background: var(--ion-color-secondary);
+}
+ion-title{
+  --color: var(--ion-color-secondary-contrast);
+}
+.label-info {
+  width: 90px;
+}
+.options-list{
+    background: var(--ion-color-primary);
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  margin: auto 0;
+  height: max-content;
+  }
+
+.custom-combobox {
+  border-radius: 20px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 12px;
+  min-width: 300px;
+  max-width: 500px;
+  width: 300px;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+
+  ion-icon {
+    color: var(--ion-color-secondary);
+    font-size: 20px;
+    margin-right: 10px;
+  }
+
+  ion-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ion-color-primary-contrast);
+    margin-right: 10px;
+  }
+
+  ion-select {
+    --placeholder-color:var(--ion-color-primary-contrast) ;
+    --padding-start: 0;
+    --padding-end: 0;
+    font-size: 12px;
+    color:var(--ion-color-primary-contrast);
+    --text-align: end;
+    height: 50px;
+  }
+
+  ion-select::part(icon) {
+    color: var(--ion-color-secondary);
+  }
+  ion-text{
+    margin-left: 0;
+    color: var(--ion-color-gray);
+    font-size:12px
+  }
+
+}
+
+ion-item{
+  --background:none
+    display:flex;
+    justify-content: center;
+    outline: none;
+    text-decoration: none;
+    height: 50px;
+}
+
+.details-buttons{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+
+.details-buttons button{
+  margin: 0 10px;
+}
+
+.item-inner{
+  padding-right: 0;
+}
+.next-button{
+  --background: var(--ion-color-secondary);
+  margin: 10px;
+  width:100px;
+}
+
+p{
+  margin: 0;
+}
+
+.page-title {
+  font-size: 48px; /* Ajusta el tamaño del título */
+  font-weight: bold;
+  color: var(--ion-color-secondary);
+  margin-top: 10px;
+  }
+
+.page-subtitle {
+  font-size: 16px; /* Ajusta el tamaño del subtítulo */
+  color: gray; /* Cambia el color del texto */
+  margin-bottom: 20px;
+}
+span{
+  color: var(--ion-color-primary-contrast);
+}
+.pay_order{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--ion-color-primary);
+  }
+  .pay_detail p, .pay_detail span{
+    color: var(--ion-color-gray-contrast);
+  }
+  .pay_detail{
+    background: var(--ion-color-dark-tertiary);
+    border: 2px solid var(--ion-color-dark-tertiary-shade);
+    padding: 20px;
+    border-radius: 5px;
+  }
+.pay_amount{
+  margin-right: 0;
+}
+ion-datetime{
+  width: 100%;
+  height: 100%;
+}
+
+
+ion-grid {
+  --ion-grid-padding: 0;
+}
+
+ion-row {
+  display: flex;
+  justify-content: center;
+}
+
+ion-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+ion-button {
+  --padding-start: 0.5rem;
+  --padding-end: 0.5rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+}
+
+
+ion-col.disabled div {
+  color: #ccc;
+  pointer-events: none;
+}
+
+.calendar-header {
+  background: var(--ion-color-dark-tertiary);
+  padding: 10px;
+
+  ion-label.current-month-year {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  ion-button {
+    --color: #007bff;
+    --ripple-color: #007bff;
+  }
+  #calendar-days{
+    background: #333;
+    color: #007bff;
+  }
+
+  #calendar_content{
+    --background: var(--ion-color-dark-tertiary) important;
+    padding: 20px;
+  }
+  ion-col.disabled {
+    color: #ccc; /* Color gris para días deshabilitados */
+    pointer-events: none; /* Desactiva interacción */
+    opacity: 0.5;
+  }
+
+  ion-col.current-month {
+    font-weight: bold;
+  }
+
+  ion-grid#calendar-days-header {
+    font-weight: bold;
+  }
+
+}
+#month-control button{
+  color: var(--ion-color-secondary);
+
+}
+.button-native {
+  color: none;
+}
+
+.ion-text-center{
+  color: var(--ion-color-secondary);
+  font-weight: 700;
+}
+
+#calendar-days-header{
+  margin-top: 20px;
+}
+
+ion-list{
+ color : var(--ion-color-gray);
+  background:transparent
+}
+
+.seats_selected ion-item{
+  background: var(--ion-color-dark-tertiary);
+  margin: 10px auto;
+}
+
+ion-item .cost-question{
+  border-radius: 20%;
+  margin-left: 10px;
+  width: 40px;
+  height: 30px;
+}

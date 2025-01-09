@@ -1,0 +1,204 @@
+/* Centrado general */
+ion-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  --background: #FCFCFC;
+  height: 100%;
+  padding: 20px;
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.logo-container img {
+  width: 350px;
+  height: auto;
+  margin-bottom: -80px;
+}
+
+.title-container h1 {
+  font-size: 2.5rem;
+  color: #f6ba67;
+  font-weight: bold;
+}
+
+.title-container p {
+  font-size: 1.2rem;
+  color: #4B5057;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 15%;
+  max-width: 400px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 25px;
+  padding: 0 10px;
+}
+
+.center {
+  width: 80%;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+}
+
+/* Estilo para el campo de entrada */
+.input-field {
+  width: 100%;
+  max-width: 500px;
+  border: none;
+  background: #EEEEEE;
+  color: #4B5057;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  text-align: center;
+  box-sizing: border-box;
+  height: 45px;
+  margin: 5px 0;
+}
+
+/* Estilos específicos para ion-input */
+ion-input {
+  --padding-start: 25px;
+  --padding-end: 25px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+}
+
+/* Asegúrate de que las etiquetas no estén pegadas a los inputs */
+.form-group label {
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #4B5057;
+}
+
+/* Estilo para el botón de iniciar sesión */
+ion-button {
+  width: 70%;
+  border-radius: 500px;
+  --background: #606060;
+  padding: 12px 0;
+  color: #f6ba67;
+}
+
+.centrado-button {
+  text-align: center;
+  justify-content: center;
+}
+
+ion-button::part(native) {
+  border-radius: 80px !important;
+}
+
+.forgot-password {
+  margin-top: -5px;
+  font-size: 0.9rem;
+  color: #1141a8; /* Cambiado a color azul */
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+  color: #1d4ed8; /* Azul más oscuro al hover */
+}
+
+.register {
+  margin-top: -10px;
+  font-size: 0.9rem;
+  color: #1d4ed8; /* Cambiado a color azul */
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.register:hover {
+  text-decoration: underline;
+  color: #1d4ed8; /* Azul más oscuro al hover */
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  width: 100%;
+}
+
+.divider span {
+  color: #4B5057;
+  background-color: white;
+  padding: 0 10px;
+  font-size: 1rem;
+}
+
+.divider:before,
+.divider:after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: #4B5057;
+  margin: 0 10px;
+}
+
+/* Botón de Google */
+.google-login {
+  --background: #ea4335;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 0.9rem;
+  width: 70%;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.google-login ion-icon {
+  font-size: 1rem;
+  margin-right: 8px;
+  color: #ffffff;
+}
+
+.facebook-login {
+  --background: #3b5998;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 0.9rem;
+  width: 70%;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.facebook-login ion-icon {
+  font-size: 1rem;
+  margin-right: 8px;
+  color: #ffffff;
+}
