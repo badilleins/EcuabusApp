@@ -57,7 +57,7 @@
   <ion-item lines="none" class="custom-combobox" >
     <ion-icon name="time-outline" slot="start"></ion-icon>
     <ion-label>Hora</ion-label>
-    <ion-select [(ngModel)]="selectedHour" placeholder="Seleccionar Hora" interface="popover" (click)="obtainHours()">
+    <ion-select [(ngModel)]="selectedHour" placeholder="Seleccionar Hora" interface="popover" (ngModelChange)="obtainHours()">
       <ion-select-option *ngFor="let hour of hoursFiltered" [value]="hour">
         {{ hour }}
       </ion-select-option>
@@ -199,7 +199,7 @@
 
  <!-- N bus -->
  <ion-item lines="none" class="custom-combobox">
-  <ion-label>N. Bus</ion-label>
+  <ion-label>Placa</ion-label>
   <span>{{busNumber}}</span>
 </ion-item>
 

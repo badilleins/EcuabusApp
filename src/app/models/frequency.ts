@@ -1,9 +1,14 @@
 export interface Frecuency{
-  hour_start: string,
-  hour_end: string,
-  days: String[],
-  available:boolean,
-  direct:boolean,
-  id_route:string,
-  id_freq:string
+  timeStart: string,
+  timeEnd: string,
+  time: string,
+  stops:Object[],
+  id:string,
+  origin:string,
+  destiny:string,
+  price:string,
+  priceVip:string,
+  isBlocked:boolean,
+  document:string,
 }
+

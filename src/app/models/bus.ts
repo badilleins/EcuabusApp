@@ -1,11 +1,12 @@
 export interface Bus{
+
+  brand:string,
   chasis:string,
   floors:number
+  id:string
   idPartner:string,
+  model:string,
   plate:string,
-  number:number,
-  brand:string,
-  photo_url:string,
-  seats_quantity:number,
-    id_bus:string
+  seats:string,
+  seatsVip:string,
 }
