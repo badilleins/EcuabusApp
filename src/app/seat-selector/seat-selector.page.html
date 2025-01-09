@@ -44,3 +44,50 @@
     <ion-button expand="full" (click)="confirmSelection()" classs="btn_selection">Confirmar Selección</ion-button>
   </ion-footer>
 </ion-content>
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Selección de Asientos
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Guía de colores -->
+  <div class="seat-guide">
+    <div class="guide-item">
+      <div class="color-box plomo"></div>
+      <span>Disponible</span>
+    </div>
+    <div class="guide-item">
+      <div class="color-box verde"></div>
+      <span>Seleccionado</span>
+    </div>
+    <div class="guide-item">
+      <div class="color-box rojo"></div>
+      <span>Reservado</span>
+    </div>
+    <div class="guide-item">
+      <div class="color-box amarillo"></div>
+      <span>VIP</span>
+    </div>
+  </div>
+
+  <!-- Contenedor de asientos -->
+  <div class="seats-container">
+    <div *ngFor="let seat of seats; let i = index"
+         [ngStyle]="{'background-color': getSeatColor(seat), 'cursor': seat.status === 'disponible' || seat.status === 'seleccionado' ? 'pointer' : 'not-allowed'}"
+         class="seat"
+         (click)="toggleSeat(i)">
+      {{ seat.number }}
+    </div>
+  </div>
+
+  <ion-footer>
+    <ion-button expand="full" (click)="confirmSelection()" classs="btn_selection">Confirmar Selección</ion-button>
+  </ion-footer>
+</ion-content>

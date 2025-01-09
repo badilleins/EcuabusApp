@@ -62,3 +62,68 @@
   background-color: var(--ion-color-secondary);
 }
 
+
+.seat-guide {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.guide-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.color-box.plomo {
+  background-color: #d3d3d3; /* Gris */
+}
+
+.color-box.verde {
+  background-color: #4CAF50; /* Verde */
+}
+
+.color-box.rojo {
+  background-color: #f44336; /* Rojo */
+}
+
+.color-box.amarillo {
+  background-color: #FFD700; /* Amarillo */
+}
+
+.seats-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.seat {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
+  color: black;
+  margin-bottom: 10px;
+}
+
+.btn_selection{
+  margin-top: 20px;
+  background-color: var(--ion-color-secondary);
+}
+

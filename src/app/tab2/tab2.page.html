@@ -1,8 +1,6 @@
 <ion-header [translucent]="true">
-  <ion-toolbar >
-    <ion-title>
-      Mis Boletos
-    </ion-title>
+  <ion-toolbar>
+    <ion-title>Mis Boletos</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,4 +11,35 @@
     </ion-toolbar>
   </ion-header>
 
+  <ion-list>
+    <ion-item-group>
+      <ion-item-divider>
+        <ion-label>Lista de Boletos</ion-label>
+      </ion-item-divider>
+
+      <!-- Iteración dinámica de boletos -->
+      <ion-item *ngFor="let boleto of boletos; let i = index" button (click)="toggleItem(i)">
+        <ion-label>
+          <h2>{{ boleto.ticket_id }}</h2>
+          <p>BusN:{{ boleto.ticket_busNumber }} Asiento:{{ boleto.ticket_numberOfSeats }} - Fecha:{{ boleto.ticket_date }}</p>
+        </ion-label>
+
+        <!-- Mostrar tarjeta si el índice coincideeee -->
+        <ion-card *ngIf="selectedItem === i">
+          <img [src]="boleto.imagen" [alt]="'Boleto ' + boleto.ticket_id" />
+        </ion-card>
+
+      </ion-item>
+
+    </ion-item-group>
+  </ion-list>
 </ion-content>
+
+<style>
+  ion-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+</style>
