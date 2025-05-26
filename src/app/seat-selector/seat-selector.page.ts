@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { Seat } from '../models/seat';
 
 @Component({
   selector: 'app-seat-selector',
@@ -7,97 +8,67 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./seat-selector.page.scss'],
 })
 export class SeatSelectorPage {
-  @Input() seats: any[] = [];  // Lista de asientos que recibe el componente
+  @Input() seats: Seat[] = [];
+  seatLayout: (Seat | null)[][] = [];
 
   constructor(private modalController: ModalController) {}
 
-  // Método para cerrar el modal
+  ngOnInit() {
+    this.seatLayout = this.generateSeatLayout(this.seats);
+  }
+
   dismiss() {
     this.modalController.dismiss();
   }
+  generateSeatLayout(seats: Seat[]): (Seat | null)[][] {
+    const layout: (Seat | null)[][] = [];
+    const seatsPerRow = 4;
 
-  // Método para cambiar el estado del asiento
-  toggleSeat(index: number) {
-    const seat = this.seats[index];
-    // Solo cambiar el estado si el asiento no está reservado
-    if (seat.status !== 'reservado') {
+    for (let i = 0; i < seats.length; i += seatsPerRow) {
+      if (i + seatsPerRow >= seats.length) {
+        layout.push(seats.slice(i));
+        break;
+      } else {
+        const row = seats.slice(i, i + seatsPerRow);
+        layout.push([row[0], row[1], null, row[2], row[3]]);
+      }
+    }
+
+    return layout;
+  }
+
+  toggleSeat(rowIndex: number, colIndex: number) {
+    const seat = this.seatLayout[rowIndex][colIndex];
+
+    if (seat && seat.status !== 'reservado') {
       seat.status = seat.status === 'seleccionado' ? 'disponible' : 'seleccionado';
     }
   }
 
-  // Confirmar la selección y devolver los asientos seleccionados
   confirmSelection() {
-    const selectedSeats = this.seats.filter(seat => seat.status === 'seleccionado');
-    this.modalController.dismiss({
-      selectedSeats: selectedSeats
+    const selectedSeats: Seat[] = [];
+    this.seatLayout.forEach(row => {
+      row.forEach(seat => {
+        if (seat?.status === 'seleccionado') {
+          selectedSeats.push(seat);
+        }
+      });
     });
+    this.modalController.dismiss({ selectedSeats });
   }
 
-  // Método para devolver el color del asiento basado en su estado y categoría
-  getSeatColor(seat: any): string {
-    if (seat.status === 'reservado') {
-      return '#f44336';  // Rojo para reservado
-    } else if (seat.category === 'VIP' && seat.status === 'seleccionado') {
-      return '#2E7D32';  // Verde oscuro para VIP seleccionado
-    } else if (seat.category === 'VIP') {
-      return '#FFEB3B';  // Amarillo para VIP disponible
-    } else if (seat.status === 'seleccionado') {
-      return '#4CAF50';  // Verde para seleccionado
-    } else if (seat.status === 'disponible') {
-      return '#d3d3d3';  // Gris para disponible
+  getSeatColor(seat: Seat | null): string {
+    if (seat?.status === 'reservado') {
+      return '#f44336';
+    } else if (seat?.category === 'VIP' && seat?.status === 'seleccionado') {
+      return '#2E7D32';
+    } else if (seat?.category === 'VIP') {
+      return '#FFEB3B';
+    } else if (seat?.status === 'seleccionado') {
+      return '#4CAF50';
+    } else if (seat?.status === 'disponible') {
+      return '#d3d3d3';
     }
-    return '#ffffff';  // Color por defecto
-  }
-}
-
-import { Component, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-
-@Component({
-  selector: 'app-seat-selector',
-  templateUrl: './seat-selector.page.html',
-  styleUrls: ['./seat-selector.page.scss'],
-})
-export class SeatSelectorPage {
-  @Input() seats: any[] = [];  // Lista de asientos que recibe el componente
-
-  constructor(private modalController: ModalController) {}
-
-  // Método para cerrar el modal
-  dismiss() {
-    this.modalController.dismiss();
-  }
-
-  // Método para cambiar el estado del asiento
-  toggleSeat(index: number) {
-    const seat = this.seats[index];
-    // Solo cambiar el estado si el asiento no está reservado
-    if (seat.status !== 'reservado') {
-      seat.status = seat.status === 'seleccionado' ? 'disponible' : 'seleccionado';
-    }
-  }
-
-  // Confirmar la selección y devolver los asientos seleccionados
-  confirmSelection() {
-    const selectedSeats = this.seats.filter(seat => seat.status === 'seleccionado');
-    this.modalController.dismiss({
-      selectedSeats: selectedSeats
-    });
-  }
-
-  // Método para devolver el color del asiento basado en su estado y categoría
-  getSeatColor(seat: any): string {
-    if (seat.status === 'reservado') {
-      return '#f44336';  // Rojo para reservado
-    } else if (seat.category === 'VIP' && seat.status === 'seleccionado') {
-      return '#2E7D32';  // Verde oscuro para VIP seleccionado
-    } else if (seat.category === 'VIP') {
-      return '#FFEB3B';  // Amarillo para VIP disponible
-    } else if (seat.status === 'seleccionado') {
-      return '#4CAF50';  // Verde para seleccionado
-    } else if (seat.status === 'disponible') {
-      return '#d3d3d3';  // Gris para disponible
-    }
-    return '#ffffff';  // Color por defecto
+    return '#ffffff';
   }
 }

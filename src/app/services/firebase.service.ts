@@ -1,9 +1,14 @@
 import { inject, Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
+
 import { Cooperatives } from '../models/cooperatives';
 import { Observable } from 'rxjs';
 import { Ticket } from '../models/ticket';
+
+import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore';
+import { getApp } from 'firebase/app';
+
 
 @Injectable({
   providedIn: 'root'
@@ -108,6 +113,65 @@ export class FirebaseService {
       console.error('Error al actualizar el estado del asiento:', error);
     }
   }
+
+//---------------------------------------------------------------------------------------
+  getDocument(collection: string, documentId: string): Observable<any> {
+    return this.firestore.collection(collection).doc(documentId).valueChanges();
+  }
+  getDocumentBus(collection: string, documentId: string, collection2:string, documentId2:string): Observable<any> {
+    return this.firestore.collection(collection).doc(documentId).collection(collection2).doc(documentId2).valueChanges();
+  }
+
+
+  getDocumentFromPath(path: string): Observable<any> {
+    return this.firestore.doc(path).valueChanges({ idField: 'id' });
+  }
+
+
+
+
+  async updateSeatStatusByNumber(
+    collection: string,
+    documentId: string,
+    tripCollection: string,
+    tripId: string,
+    seatNumber: number,
+    newStatus: string
+  ) {
+    try {
+      const app = getApp();
+      const db = getFirestore(app);
+
+      const tripRef = doc(db, collection, documentId, tripCollection, tripId);
+
+      const docSnap = await getDoc(tripRef);
+
+      if (docSnap.exists()) {
+        const arraySeats = docSnap.data()['seatMap'];
+
+        const updatedSeats = arraySeats.map((seat: any) => {
+          if (seat.number === seatNumber) {
+            return {
+              ...seat,
+              status: newStatus
+            };
+          }
+          return seat;
+        });
+
+        await updateDoc(tripRef, {
+          seatMap: updatedSeats
+        });
+
+        console.log(`Estado del asiento ${seatNumber} actualizado a ${newStatus}`);
+      } else {
+        console.log('Documento no encontrado');
+      }
+    } catch (error) {
+      console.error('Error al actualizar el estado del asiento:', error);
+    }
+  }
+
 
 }
 

@@ -13,6 +13,16 @@ const routes: Routes = [
         loadChildren: () =>
           import('../escaner/escaner.module').then((m) => m.EscanerPageModule),
       },
+       {
+        path: 'list-passenger',
+        loadChildren: () =>
+          import('../list-passenger/list-passenger.module').then((m) => m.ListPassengerPageModule),
+      },
+      {
+        path: 'mi-cuenta',
+        loadChildren: () =>
+          import('../mi-cuenta/mi-cuenta.module').then((m) => m.MiCuentaPageModule),
+      },
       {
         path: '',
         redirectTo: '/conductor-tabs/escaner',

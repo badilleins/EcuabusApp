@@ -7,3 +7,10 @@ ion-toolbar{
 ion-title{
   --color: var(--ion-color-secondary-contrast);
 }
+
+.qr-image {
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+  display: block;
+}

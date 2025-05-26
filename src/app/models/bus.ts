@@ -1,5 +1,7 @@
-export interface Bus{
+import { Seat } from "./seat"
 
+export interface Bus{
+  arraySeats :Seat[],
   brand:string,
   chasis:string,
   floors:number

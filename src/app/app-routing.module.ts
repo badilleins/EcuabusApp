@@ -46,7 +46,11 @@ const routes: Routes = [
     path: 'seat-selector',
     loadChildren: () => import('./seat-selector/seat-selector.module').then( m => m.SeatSelectorPageModule)
   },
-  {path:'', redirectTo:'/tabs/tabs1',pathMatch:'full'},
+  {path:'', redirectTo:'/tabs/tabs1',pathMatch:'full'},  {
+    path: 'list-passenger',
+    loadChildren: () => import('./list-passenger/list-passenger.module').then( m => m.ListPassengerPageModule)
+  },
+
 ];
 @NgModule({
   imports: [

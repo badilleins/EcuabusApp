@@ -1,45 +1,46 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Mis Boletos</ion-title>
+    <ion-title>
+      Mis Boletos
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="home_content">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Mis Boletos</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <ion-list>
-    <ion-item-group>
-      <ion-item-divider>
-        <ion-label>Lista de Boletos</ion-label>
-      </ion-item-divider>
+  <ion-list class="options-list">
+    <ion-card *ngFor="let boleto of boletoss; let i = index" class="ticket-card">
+      <ion-card-header (click)="boleto.showDetails = !boleto.showDetails">
+        <ion-card-title>
+          Viaje {{ i + 1 }}
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content *ngIf="boleto.showDetails" class="ticket-details">
+        <!-- Generación del código QR -->
+        <div class="qr-container">
+          <img [src]="boleto.imagen" [alt]="'Boleto ' + boleto.ticket_id" class="qr-image" />
+        </div>
 
-      <!-- Iteración dinámica de boletos -->
-      <ion-item *ngFor="let boleto of boletos; let i = index" button (click)="toggleItem(i)">
-        <ion-label>
-          <h2>{{ boleto.ticket_id }}</h2>
-          <p>BusN:{{ boleto.ticket_busNumber }} Asiento:{{ boleto.ticket_numberOfSeats }} - Fecha:{{ boleto.ticket_date }}</p>
-        </ion-label>
+        <!-- Botón para descargar el PDF -->
+        <ion-button expand="full" class="rounded-button" (click)="generatePDF(boleto)">Descargar</ion-button>
 
-        <!-- Mostrar tarjeta si el índice coincideeee -->
-        <ion-card *ngIf="selectedItem === i">
-          <img [src]="boleto.imagen" [alt]="'Boleto ' + boleto.ticket_id" />
-        </ion-card>
-
-      </ion-item>
-
-    </ion-item-group>
+        <!-- Botón de GPS para redirigir al mapa -->
+        <ion-button expand="full" class="rounded-button" (click)="goToTab3()">
+          <ion-icon name="locate" slot="start"></ion-icon>
+          Ver en el mapa
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
   </ion-list>
-</ion-content>
 
-<style>
-  ion-card img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-</style>
+   <!-- Contenedor para mostrar cuando no hay boletos -->
+   <div *ngIf="boletoss.length === 0" class="no-boletos">
+    <ion-icon aria-hidden="true" src="../../assets/icon/bus.svg" size="large" class="icon" color="medium"></ion-icon>
+    <p>Sin boletos</p>
+  </div>
+</ion-content>

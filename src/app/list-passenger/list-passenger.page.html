@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Lista de Pasajeros</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <div class="ticket-container" *ngFor="let ticket of tickets">
+      <ion-card class="ticket-card">
+        <div class="ticket-header" [ngClass]="{'vip-header': ticket.seatType === 'VIP', 'normal-header': ticket.seatType === 'Normal'}">
+          <h2 class="seat-number">Asiento {{ticket.seatNumber}}</h2>
+          <ion-badge [class]="'status-badge ' + ticket.estado.toLowerCase().replace(' ', '-')">
+            {{ticket.estado}}
+          </ion-badge>
+        </div>
+
+        <div class="ticket-content">
+          <div class="info-row">
+            <span class="label">Tipo de Asiento:</span>
+            <span class="seat-type" [ngClass]="{'vip': ticket.seatType === 'VIP', 'normal': ticket.seatType === 'Normal'}">
+              {{ticket.seatType}}
+            </span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Fecha:</span>
+            <span class="value">
+              {{ ticket.date | date:'dd/MM/yyyy HH:mm' }}
+            </span>            
+          </div>
+          
+          <div class="divider"></div>
+          
+          <div class="client-section">
+            <h3 class="section-title">Cliente</h3>
+            <div class="info-row">
+              <span class="label">Nombre:</span>
+              <span class="value">{{ticket.userId || 'No asignado'}}</span>
+            </div>
+          </div>
+        </div>
+      </ion-card>
+    </div>
+  </ion-list>
+</ion-content>
