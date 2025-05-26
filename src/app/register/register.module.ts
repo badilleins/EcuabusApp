@@ -18,4 +18,5 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   ],
   declarations: [RegisterPage]
 })
+
 export class RegisterPageModule {}

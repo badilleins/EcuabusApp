@@ -32,15 +32,18 @@
 
   <!-- Contenedor de asientos -->
   <div class="seats-container">
-    <div *ngFor="let seat of seats; let i = index"
-         [ngStyle]="{'background-color': getSeatColor(seat), 'cursor': seat.status === 'disponible' || seat.status === 'seleccionado' ? 'pointer' : 'not-allowed'}"
-         class="seat"
-         (click)="toggleSeat(i)">
-      {{ seat.number }}
+    <div class="row" *ngFor="let row of seatLayout; let rowIndex = index">
+      <div
+        *ngFor="let seat of row; let colIndex = index"
+        [ngClass]="{'seat': seat, 'space': seat === null}"
+        [ngStyle]="seat ? {'background-color': getSeatColor(seat), 'cursor': seat.status === 'disponible' ? 'pointer' : 'not-allowed'} : {}"
+        (click)="seat && toggleSeat(rowIndex, colIndex)">
+        {{ seat?.number }}
+      </div>
     </div>
   </div>
 
   <ion-footer>
-    <ion-button expand="full" (click)="confirmSelection()" classs="btn_selection">Confirmar Selección</ion-button>
+    <ion-button expand="full" (click)="confirmSelection()">Confirmar Selección</ion-button>
   </ion-footer>
 </ion-content>

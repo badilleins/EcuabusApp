@@ -64,52 +64,38 @@ export class AuthService {
     );
   }
 
- // Función para verificar si el usuario tiene el rol de 'cobrador'
- checkIfUserIsCobrador(): Observable<boolean> {
-  return new Observable<boolean>((observer) => {
-    this.afAuth.authState.subscribe((user) => {
-      if (!user) {
-        observer.next(false);
-        observer.complete();
-        return;
-      }
-
-      const userEmail = user.email;
-
-      this.firestore.collection('cooperatives').get().subscribe((cooperativesSnapshot) => {
-        if (cooperativesSnapshot.empty) {
+  checkIfUserIsCobrador(): Observable<boolean> {
+    return new Observable<boolean>((observer) => {
+      this.afAuth.authState.subscribe((user) => {
+        if (!user) {
           observer.next(false);
           observer.complete();
           return;
         }
 
-        const driverChecks = cooperativesSnapshot.docs.map((coopDoc) =>
-          this.firestore
-            .collection('cooperatives')
-            .doc(coopDoc.id)
-            .collection('drivers', (ref) => ref.where('email', '==', userEmail))
-            .get()
-            .pipe(
-              map((driversSnapshot) => {
-                if (!driversSnapshot.empty) {
-                  return driversSnapshot.docs.some((driverDoc) => driverDoc.data()['rol'] === 'Cobrador');
-                }
-                return false;
-              })
-            )
-        );
+        const userEmail = user.email;
 
-        forkJoin(driverChecks).subscribe((results) => {
-          const isCobrador = results.some((result) => result === true);
-          observer.next(isCobrador);
-          observer.complete();
-        });
+        // Buscar directamente en la colección 'users'
+        this.firestore
+          .collection('users', (ref) => ref.where('email', '==', userEmail))
+          .get()
+          .subscribe((userSnapshot) => {
+            if (userSnapshot.empty) {
+              observer.next(false);
+              observer.complete();
+              return;
+            }
+
+            // Verificar si alguno de los documentos tiene el rol 'Cobrador'
+            const isCobrador = userSnapshot.docs.some(
+              (doc) => (doc.data() as { rol: string }).rol === 'Cobrador'
+            );
+
+
+            observer.next(isCobrador);
+            observer.complete();
+          });
       });
     });
-  });
-}
-
-
-
-
+  }
 }

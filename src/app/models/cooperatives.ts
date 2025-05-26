@@ -5,5 +5,6 @@ export interface Cooperatives{
   name:String,
   phone:String,
   photo:String,
-  ruc:String
+  ruc:String,
+  uid:String,
 }

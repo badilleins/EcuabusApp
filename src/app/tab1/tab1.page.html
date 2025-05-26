@@ -57,7 +57,7 @@
   <ion-item lines="none" class="custom-combobox" >
     <ion-icon name="time-outline" slot="start"></ion-icon>
     <ion-label>Hora</ion-label>
-    <ion-select [(ngModel)]="selectedHour" placeholder="Seleccionar Hora" interface="popover" (click)="obtainHours()">
+    <ion-select [(ngModel)]="selectedHour" placeholder="Seleccionar Hora" interface="popover" (ngModelChange)="obtainHours()">
       <ion-select-option *ngFor="let hour of hoursFiltered" [value]="hour">
         {{ hour }}
       </ion-select-option>
@@ -179,27 +179,15 @@
   <!-- Costo por asiento -->
   <ion-item lines="none" class="custom-combobox">
     <ion-label>Costo asiento</ion-label>
-    <span>{{seatCost}}</span>
+    <span>{{seatNormalCost+seatVIPCost}}</span>
     <ion-button class="cost-question" (click)="showToastCost()">
       <ion-icon name="help-outline" slot="end"></ion-icon>
     </ion-button>
   </ion-item>
 
-
-
-  <!-- Método de pago -->
- <ion-item lines="none" class="custom-combobox">
-  <ion-label>Método de pago</ion-label>
-  <ion-select [(ngModel)]="selectedMethod" placeholder="Seleccionar método" interface="popover">
-    <ion-select-option *ngFor="let method of methods" [value]="method">
-      {{ method }}
-    </ion-select-option>
-  </ion-select>
-</ion-item>
-
  <!-- N bus -->
  <ion-item lines="none" class="custom-combobox">
-  <ion-label>N. Bus</ion-label>
+  <ion-label>Placa</ion-label>
   <span>{{busNumber}}</span>
 </ion-item>
 
@@ -239,12 +227,13 @@
 
   <ion-item lines="none">
     <ion-button expand="block" class="next-button" shape="round" (click)="goBack2()">Anterior</ion-button>
-   <ion-button expand="block" class="next-button" shape="round" (click)="saveTicket()">Guardar</ion-button>
+
+    <ion-button  *ngIf="showSaveButton" expand="block" class="next-button" shape="round" (click)="saveTicket('Por cobrar')">Pagar</ion-button>
   </ion-item>
+<div id="paypal-button-container"></div>
 </ion-list>
 
 
-
-
 </ion-content>
+<script src="https://www.paypal.com/sdk/js?client-id=AQlaJUf_I2iYP7v1-EMbZU4v7k7x9NRmuIb6WN1-ebjBhh5LkPWuixf1-7TdJXZTniYPexF9EciDD76M&currency=USD"></script>
 

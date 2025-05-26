@@ -62,3 +62,68 @@
   background-color: var(--ion-color-secondary);
 }
 
+
+
+.seats-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.row {
+  display: flex;
+  margin: 5px 0;
+}
+
+.seat {
+  width: 40px;
+  height: 40px;
+  background-color: #d3d3d3;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 5px;
+  border-radius: 5px;
+}
+
+.space {
+  width: 40px;
+  height: 40px;
+  margin: 0 5px;
+  background: transparent;
+}
+
+.seat-guide {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 10px 0;
+}
+
+.guide-item {
+  display: flex;
+  align-items: center;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  border: 1px solid #000;
+}
+
+.plomo {
+  background-color: #d3d3d3;
+}
+
+.verde {
+  background-color: #4CAF50;
+}
+
+.rojo {
+  background-color: #f44336;
+}
+
+.amarillo {
+  background-color: #FFEB3B;
+}
