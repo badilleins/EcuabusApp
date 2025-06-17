@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
+import { RouterModule, Routes } from '@angular/router';
 import { ConductorTabsPage } from './conductor-tabs.page';
 
 const routes: Routes = [
@@ -11,31 +10,32 @@ const routes: Routes = [
       {
         path: 'escaner',
         loadChildren: () =>
-          import('../escaner/escaner.module').then((m) => m.EscanerPageModule),
+          import('../escaner/escaner.module').then(m => m.EscanerPageModule),
       },
-       {
+      {
         path: 'list-passenger',
         loadChildren: () =>
-          import('../list-passenger/list-passenger.module').then((m) => m.ListPassengerPageModule),
+          import('../list-passenger/list-passenger.module').then(m => m.ListPassengerPageModule),
       },
       {
         path: 'mi-cuenta',
         loadChildren: () =>
-          import('../mi-cuenta/mi-cuenta.module').then((m) => m.MiCuentaPageModule),
+          import('../mi-cuenta/mi-cuenta.module').then(m => m.MiCuentaPageModule),
       },
       {
         path: '',
-        redirectTo: '/conductor-tabs/escaner',
+        redirectTo: 'escaner',
         pathMatch: 'full',
       },
     ],
   },
   {
     path: '',
-    redirectTo: '/conductor-tabs/escaner',
+    redirectTo: '',
     pathMatch: 'full',
   },
 ];
+
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

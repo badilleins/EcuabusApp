@@ -1,8 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { QrService } from '../services/qr.service';
-import { FirebaseService } from '../services/firebase.service';
-import { forkJoin, map, Observable } from 'rxjs';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Component({
@@ -14,8 +11,6 @@ export class EscanerPage implements OnInit {
   JsonObject = false;
   JsonData: any;
   userScanned = false;
-  firebaseSvc = inject(FirebaseService);
-  afAuth = inject(AngularFireAuth);
   firestore = inject(AngularFirestore);
 
   toast = {
@@ -24,7 +19,7 @@ export class EscanerPage implements OnInit {
     color: '',
   };
 
-  constructor(public qr: QrService, private frSrv: FirebaseService) {}
+  constructor(public qr: QrService) {}
 
   async scan() {
     this.JsonObject = false;
@@ -48,91 +43,44 @@ export class EscanerPage implements OnInit {
     this.qr.flash();
   }
 
-  // Verificar si el usuario tiene rol de 'Cobrador'
-  checkIfUserIsCobrador(): Observable<boolean> {
-    return new Observable<boolean>((observer) => {
-      this.afAuth.authState.subscribe((user) => {
-        if (!user) {
-          observer.next(false);
-          observer.complete();
-          return;
-        }
-
-        const userEmail = user.email;
-
-        this.firestore.collection('users').get().subscribe((cooperativesSnapshot) => {
-          if (cooperativesSnapshot.empty) {
-            observer.next(false);
-            observer.complete();
-            return;
-          }
-
-          const driverChecks = cooperativesSnapshot.docs.map((coopDoc) =>
-            this.firestore
-              .collection('users')
-              .doc(coopDoc.id)
-              .collection('drivers', (ref) => ref.where('email', '==', userEmail))
-              .get()
-              .pipe(
-                map((driversSnapshot) => {
-                  if (!driversSnapshot.empty) {
-                    return driversSnapshot.docs.some((driverDoc) => driverDoc.data()['rol'] === 'Cobrador');
-                  }
-                  return false;
-                })
-              )
-          );
-
-          forkJoin(driverChecks).subscribe((results) => {
-            const isCobrador = results.some((result) => result === true);
-            observer.next(isCobrador);
-            observer.complete();
-          });
-        });
-      });
-    });
-  }
-
   async registerUser() {
+
     try {
-      // Verificar si el usuario tiene el rol de 'Cobrador'
-      const isCobrador = await this.checkIfUserIsCobrador().toPromise();
-      if (!isCobrador) {
-        this.showToast('No tienes permisos para realizar esta acción.', 'danger');
-        return;
+     const scannedData = this.parseTicketData(this.qr.scanResult);
+      this.showToast('Datos escaneados: ' + scannedData.userId + " " + scannedData.seatNumber + scannedData.tripId, 'primary');
+if (!scannedData.userId || !scannedData.tripId || !scannedData.seatNumber) {
+    this.showToast('Datos incompletos en el código escaneado','primary');
+  throw new Error('Datos incompletos en el código escaneado.');
+}
+
+
+const snapshot = await this.firestore
+  .collectionGroup('boletos', ref =>
+    ref
+      .where('userId', '==', scannedData.userId)
+      .where('tripId', '==', scannedData.tripId)
+      .where('seatNumber', '==', scannedData.seatNumber)
+  )
+  .get()
+  .toPromise();
+
+
+  this.showToast('Snapshot encontrado: ' + snapshot, 'primary');
+      if (snapshot?.empty) {
+        this.showToast('No se encontró un ticket válido.', 'danger');
+        throw new Error('No se encontró un ticket válido.');
       }
 
-      const scannedData = JSON.parse(this.qr.scanResult);
-
-      // Convertir datos a UTF-8
-      const userIdUtf8 = encodeURIComponent(scannedData.userId);
-      const tripIdUtf8 = encodeURIComponent(scannedData.tripId);
-      const seatNumberUtf8 = encodeURIComponent(scannedData.seatNumber);
-
-      // Actualizar Firestore
-      await this.firestore
-        .collection('tickets', (ref) =>
-          ref
-            .where('userId', '==', userIdUtf8)
-            .where('tripId', '==', tripIdUtf8)
-            .where('seatNumber', '==', seatNumberUtf8)
-        )
-        .get()
-        .toPromise()
-        .then((snapshot) => {
-          if (snapshot?.empty) {
-            throw new Error('No se encontró un ticket válido.');
-          }
-
-          snapshot?.forEach((doc) => {
-            doc.ref.update({ status: 'registrado' });
-          });
-        });
+      snapshot?.forEach((doc) => {
+        this.showToast('Actualizando documento: ' + doc.id, 'primary');
+        doc.ref.update({ estado: 'registrado' });
+      });
 
       this.showToast('Pasajero registrado con éxito.', 'success');
     } catch (error) {
       console.error('Error al registrar boleto:', error);
-      this.showToast('Error al registrar el boleto.', 'danger');
+      this.showToast(JSON.parse(this.qr.scanResult),'primary');
+      this.showToast('Error al registrar el boleto.' +error, 'danger');
     }
   }
 
@@ -148,4 +96,44 @@ export class EscanerPage implements OnInit {
   }
 
   ngOnInit() {}
+
+  isJson(str: string): boolean {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+parseJson(str: string): any {
+  try {
+    return JSON.parse(str);
+  } catch {
+    return {};
+  }
+}
+
+getKeys(str: string): string[] {
+  const obj = this.parseJson(str);
+  return obj ? Object.keys(obj) : [];
+}
+
+ parseTicketData(text: string) {
+
+
+  const userIdMatch = text.match(/ID de usuario:\s*(.+)/);
+  const tripIdMatch = text.match(/ID de viaje:\s*(.+)/);
+  const seatNumberMatch = text.match(/Número de asientos:\s*(.+)/);
+
+  console.log('userIdMatch:', userIdMatch);
+  console.log('tripIdMatch:', tripIdMatch);
+  console.log('seatNumberMatch:', seatNumberMatch);
+  return {
+    userId: userIdMatch ? userIdMatch[1].trim() : null,
+    tripId: tripIdMatch ? tripIdMatch[1].trim() : null,
+    seatNumber: seatNumberMatch ? seatNumberMatch[1].trim() : null,
+  };
+}
+
 }
