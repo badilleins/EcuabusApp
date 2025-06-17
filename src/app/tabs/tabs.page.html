@@ -1,6 +1,6 @@
 <ion-tabs>
 
-  <ion-tab-bar slot="bottom" color="gray">
+  <ion-tab-bar slot="bottom" color="gray" *ngIf="showTabs()">
     <ion-tab-button tab="inicio" href="/tabs/inicio">
       <ion-icon aria-hidden="true" src="../../assets/icon/home.svg" size="large" class="icon" color="primary"></ion-icon>
     </ion-tab-button>

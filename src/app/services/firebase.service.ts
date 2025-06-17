@@ -172,6 +172,11 @@ export class FirebaseService {
     }
   }
 
+getTripById(tripId: string): Observable<any> {
+  return this.firestore.collection('viajes').doc(tripId).valueChanges({ idField: 'id' });
+}
+
+
 
 }
 

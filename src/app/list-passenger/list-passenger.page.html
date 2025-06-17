@@ -27,11 +27,18 @@
             <span class="label">Fecha:</span>
             <span class="value">
               {{ ticket.date | date:'dd/MM/yyyy HH:mm' }}
-            </span>            
+            </span>
           </div>
-          
+
+          <div class="info-row">
+            <span class="label">Precio:</span>
+            <span class="value">
+              {{ ticket.total}}
+            </span>
+          </div>
+
           <div class="divider"></div>
-          
+
           <div class="client-section">
             <h3 class="section-title">Cliente</h3>
             <div class="info-row">

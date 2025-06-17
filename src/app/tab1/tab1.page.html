@@ -228,7 +228,7 @@
   <ion-item lines="none">
     <ion-button expand="block" class="next-button" shape="round" (click)="goBack2()">Anterior</ion-button>
 
-    <ion-button  *ngIf="showSaveButton" expand="block" class="next-button" shape="round" (click)="saveTicket('Por cobrar')">Pagar</ion-button>
+    <ion-button  *ngIf="showSaveButton" expand="block" class="next-button" shape="round" (click)="goPayOrderNow()">Pagar</ion-button>
   </ion-item>
 <div id="paypal-button-container"></div>
 </ion-list>

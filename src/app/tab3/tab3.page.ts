@@ -1,14 +1,5 @@
-/// <reference types="google.maps" />
-
 import { Component, OnInit } from '@angular/core';
-
-interface Market {
-  position: {
-    lat: number;
-    lng: number;
-  };
-  title: string;
-}
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-tab3',
@@ -17,56 +8,46 @@ interface Market {
 })
 export class Tab3Page implements OnInit {
 
-  map: google.maps.Map | null = null;
-
-  constructor() {}
+  map: L.Map | undefined;
 
   ngOnInit() {
     this.loadMap();
   }
 
-  loadMap() {
-    const mapEle: HTMLElement | null = document.getElementById('map');
-    if (mapEle) {
-      const myLatlng = { lat: -1.268211, lng: -78.626624 }; // Terminal Sur como punto central
-
-      this.map = new google.maps.Map(mapEle, {
-        center: myLatlng,
-        zoom: 12
-      });
-
-      google.maps.event.addListenerOnce(this.map, 'idle', () => {
-        mapEle.classList.add('show-map');
-
-        // Agregar los dos terminales como marcadores
-        const markets: Market[] = [
-          {
-            position: {
-              lat: -1.3003273, // Coordenadas del Terminal Sur
-              lng: -78.6368708
-            },
-            title: 'Terminal Terrestre Sur'
-          },
-          {
-            position: {
-              lat: -1.2361181, // Coordenadas del Terminal Norte
-              lng: -78.6190579
-            },
-            title: 'Terminal Terrestre Norte'
-          }
-        ];
-
-        // Agregar los marcadores al mapa
-        markets.forEach(market => this.addMarket(market));
-      });
+  ionViewDidEnter() {
+    if (this.map) {
+      this.map.invalidateSize();
     }
   }
 
-  addMarket(market: Market) {
-    return new google.maps.Marker({
-      position: market.position,
-      map: this.map,
-      title: market.title
+  loadMap() {
+    if (this.map) {
+      return; // evitar crear el mapa varias veces
+    }
+
+    // 🔧 Configurar los íconos desde assets
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: 'assets/marker-icon-2x.png',
+      iconUrl: 'assets/marker-icon.png',
+      shadowUrl: 'assets/marker-shadow.png'
+    });
+
+    const myLatlng = L.latLng(-1.268211, -78.626624);
+    this.map = L.map('map').setView(myLatlng, 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    const terminals = [
+      { coords: [-1.3003273, -78.6368708], label: 'Terminal Terrestre Sur' },
+      { coords: [-1.2361181, -78.6190579], label: 'Terminal Terrestre Norte' }
+    ];
+
+    terminals.forEach(terminal => {
+      L.marker(terminal.coords as L.LatLngExpression)
+        .addTo(this.map!)
+        .bindPopup(terminal.label);
     });
   }
 }
